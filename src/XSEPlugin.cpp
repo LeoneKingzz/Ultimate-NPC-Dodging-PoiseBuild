@@ -74,7 +74,6 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) constinit auto SKSEPlugin_Versio
 	v.PluginName("PluginName");
 	v.PluginVersion({1, 0, 0, 0});
 	v.UsesAddressLibrary(true);
-	v.CompatibleVersions({SKSE::RUNTIME_SSE_LATEST_AE, SKSE::RUNTIME_LATEST_VR});
 	v.HasNoStructUse(true);
 	return v;
 }();
