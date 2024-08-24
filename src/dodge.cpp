@@ -689,7 +689,7 @@ void dodge::react_to_bash_sprint(RE::Actor* a_attacker, float attack_range)
 					}
 
 					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-					auto               angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
 					float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
 
