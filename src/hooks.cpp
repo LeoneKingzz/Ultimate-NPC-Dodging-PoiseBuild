@@ -26,7 +26,7 @@ namespace hooks
 				bool bUND_IsDodgeRoll = false;
 				if (actor->GetGraphVariableBool("bUND_IsDodgeRoll", bUND_IsDodgeRoll) && bUND_IsDodgeRoll) {
 					if (settings::bStaminaCost_enable) {
-						logger::info("Protagnist {} DodgeRollCost {}"sv, actor->GetName(), DodgeRoll_staminacost);
+						logger::info("Protagnist {} DodgeRollCost {}", actor->GetName(), DodgeRoll_staminacost);
 						caster->CastSpellImmediate(StaminaCost, true, actor, 1, false, -(DodgeRoll_staminacost), actor);
 					}
 					if (settings::biFrames_enable) {
@@ -35,7 +35,7 @@ namespace hooks
 					break;
 				} else {
 					if (settings::bStaminaCost_enable) {
-						logger::info("Protagnist {} SideStepCost {}"sv, actor->GetName(), SideStep_staminacost);
+						logger::info("Protagnist {} SideStepCost {}", actor->GetName(), SideStep_staminacost);
 						caster->CastSpellImmediate(StaminaCost, true, actor, 1, false, -(SideStep_staminacost), actor);
 					}
 					if (settings::biFrames_enable) {

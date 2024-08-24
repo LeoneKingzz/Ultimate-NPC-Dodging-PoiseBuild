@@ -1026,7 +1026,7 @@ void dodge::attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_directions,
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
 				do_dodge(a_actor, direction);
-				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
+				logger::info("Protagnist {} ReflexScore {}", a_actor->GetName(), dodge_chance);
 			}
 			return;
 		} else {
@@ -1059,7 +1059,7 @@ void dodge::Powerattack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
 				do_dodge(a_actor, direction);
-				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
+				logger::info("Protagnist {} ReflexScore {}", a_actor->GetName(), dodge_chance);
 			}
 			return;
 		} else {
@@ -1092,7 +1092,7 @@ void dodge::NormalAttack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* 
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
 				do_dodge(a_actor, direction);
-				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
+				logger::info("Protagnist {} ReflexScore {}", a_actor->GetName(), dodge_chance);
 			}
 			return;
 		} else {
@@ -1126,7 +1126,7 @@ void dodge::Shouts_Spells_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set*
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
 				do_dodge(a_actor, direction);
-				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
+				logger::info("Protagnist {} ReflexScore {}", a_actor->GetName(), dodge_chance);
 			}
 			return;
 		} else {
@@ -1159,7 +1159,7 @@ void dodge::Bash_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_direct
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
 				do_dodge(a_actor, direction);
-				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
+				logger::info("Protagnist {} ReflexScore {}", a_actor->GetName(), dodge_chance);
 			}
 			return;
 		} else {
@@ -1193,7 +1193,7 @@ void dodge::BashSprint_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
 				do_dodge(a_actor, direction);
-				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
+				logger::info("Protagnist {} ReflexScore {}", a_actor->GetName(), dodge_chance);
 			}
 			return;
 		} else {
