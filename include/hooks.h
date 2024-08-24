@@ -7,7 +7,7 @@ namespace hooks
 
 	using EventResult = RE::BSEventNotifyControl;
 	
-	//static bool GetEquippedShouts(RE::Actor* actor);
+	static bool GetEquippedShouts(RE::Actor* actor);
 
 	class IHooks
 	{
