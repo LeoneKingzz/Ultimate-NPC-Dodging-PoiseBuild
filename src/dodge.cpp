@@ -452,53 +452,52 @@ void dodge::react_to_melee(RE::Actor* a_attacker, float attack_range)
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
 	}
-	RE::TESObjectREFR* _a_attacker = a_attacker->As<RE::TESObjectREFR>();
+	auto combatGroup = a_attacker->GetCombatGroup();
+	if (combatGroup) {
+		for (auto it = combatGroup->targets.begin(); it != combatGroup->targets.end(); ++it) {
+			if (it->targetHandle && it->targetHandle.get().get()) {
+				RE::Actor* refr = it->targetHandle.get().get();
+				if (refr->GetPosition().GetDistance(a_attacker->GetPosition()) <= attack_range) {
+					
+					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
+						continue;
+					}
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
+					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
+					if (!CTarget) {
+						continue;
+					}
+					if (!ValhallaUtils::is_adversary(refr, a_attacker)) {
+						continue;
+					}
 
-	RE::TES::GetSingleton()->ForEachReferenceInRange(_a_attacker, attack_range, [&](RE::TESObjectREFR& _refr) {
-		if (!_refr.IsDisabled() && _refr.Is3DLoaded() && _refr.GetFormType() == RE::FormType::ActorCharacter && _refr.GetPosition().GetDistance(_a_attacker->GetPosition()) <= attack_range) {
-			RE::Actor* refr = _refr.As<RE::Actor>();
-			
-			if (!refr) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!Utils::Actor::isHumanoid(refr)) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
-			if (!CTarget){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!ValhallaUtils::is_adversary(refr, a_attacker)){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
+					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
+					auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
-			RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-			auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
 
-			float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
+					if (abs(angle) > attackAngle) {
+						continue;
+					}
 
-
-			if (abs(angle) > attackAngle) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-
-			switch (settings::iDodgeAI_Framework) {
-			case 0:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_reactive);
-				break;
-			case 1:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_all);
-				break;
+					switch (settings::iDodgeAI_Framework) {
+					case 0:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_reactive);
+						break;
+					case 1:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_all);
+						break;
+					}
+				}
+				continue;
 			}
 		}
-		return RE::BSContainer::ForEachResult::kContinue;
-	});
+	}
 }
 
 void dodge::react_to_melee_power(RE::Actor* a_attacker, float attack_range)
@@ -506,52 +505,52 @@ void dodge::react_to_melee_power(RE::Actor* a_attacker, float attack_range)
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
 	}
-	RE::TESObjectREFR* _a_attacker = a_attacker->As<RE::TESObjectREFR>();
+	auto combatGroup = a_attacker->GetCombatGroup();
+	if (combatGroup) {
+		for (auto it = combatGroup->targets.begin(); it != combatGroup->targets.end(); ++it) {
+			if (it->targetHandle && it->targetHandle.get().get()) {
+				RE::Actor* refr = it->targetHandle.get().get();
+				if (refr->GetPosition().GetDistance(a_attacker->GetPosition()) <= attack_range) {
+					
+					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
+						continue;
+					}
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
+					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
+					if (!CTarget) {
+						continue;
+					}
+					if (!ValhallaUtils::is_adversary(refr, a_attacker)) {
+						continue;
+					}
 
-	RE::TES::GetSingleton()->ForEachReferenceInRange(_a_attacker, attack_range, [&](RE::TESObjectREFR& _refr) {
-		if (!_refr.IsDisabled() && _refr.Is3DLoaded() && _refr.GetFormType() == RE::FormType::ActorCharacter && _refr.GetPosition().GetDistance(_a_attacker->GetPosition()) <= attack_range) {
-			RE::Actor* refr = _refr.As<RE::Actor>();
+					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
+					auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
-			if (!refr) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!Utils::Actor::isHumanoid(refr)) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
-			if (!CTarget){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!ValhallaUtils::is_adversary(refr, a_attacker)){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
+					float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
 
-			RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-			auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					if (abs(angle) > attackAngle) {
+						continue;
+					}
 
-			float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
-
-			if (abs(angle) > attackAngle) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-
-			switch (settings::iDodgeAI_Framework) {
-			case 0:
-				dodge::GetSingleton()->Powerattack_attempt_dodge(refr, &dodge_directions_tk_reactive);
-				break;
-			case 1:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_all);
-				break;
+					switch (settings::iDodgeAI_Framework) {
+					case 0:
+						dodge::GetSingleton()->Powerattack_attempt_dodge(refr, &dodge_directions_tk_reactive);
+						break;
+					case 1:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_all);
+						break;
+					}
+				}
+				continue;
 			}
 		}
-		return RE::BSContainer::ForEachResult::kContinue;
-	});
+	}
 }
 
 void dodge::react_to_melee_normal(RE::Actor* a_attacker, float attack_range)
@@ -559,52 +558,52 @@ void dodge::react_to_melee_normal(RE::Actor* a_attacker, float attack_range)
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
 	}
-	RE::TESObjectREFR* _a_attacker = a_attacker->As<RE::TESObjectREFR>();
+	auto combatGroup = a_attacker->GetCombatGroup();
+	if (combatGroup) {
+		for (auto it = combatGroup->targets.begin(); it != combatGroup->targets.end(); ++it) {
+			if (it->targetHandle && it->targetHandle.get().get()) {
+				RE::Actor* refr = it->targetHandle.get().get();
+				if (refr->GetPosition().GetDistance(a_attacker->GetPosition()) <= attack_range) {
+					
+					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
+						continue;
+					}
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
+					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
+					if (!CTarget) {
+						continue;
+					}
+					if (!ValhallaUtils::is_adversary(refr, a_attacker)) {
+						continue;
+					}
 
-	RE::TES::GetSingleton()->ForEachReferenceInRange(_a_attacker, attack_range, [&](RE::TESObjectREFR& _refr) {
-		if (!_refr.IsDisabled() && _refr.Is3DLoaded() && _refr.GetFormType() == RE::FormType::ActorCharacter && _refr.GetPosition().GetDistance(_a_attacker->GetPosition()) <= attack_range) {
-			RE::Actor* refr = _refr.As<RE::Actor>();
+					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
+					auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
-			if (!refr) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!Utils::Actor::isHumanoid(refr)) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
-			if (!CTarget){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!ValhallaUtils::is_adversary(refr, a_attacker)){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
+					float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
 
-			RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-			auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					if (abs(angle) > attackAngle) {
+						continue;
+					}
 
-			float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
-
-			if (abs(angle) > attackAngle) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-
-			switch (settings::iDodgeAI_Framework) {
-			case 0:
-				dodge::GetSingleton()->NormalAttack_attempt_dodge(refr, &dodge_directions_tk_reactive);
-				break;
-			case 1:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_all);
-				break;
+					switch (settings::iDodgeAI_Framework) {
+					case 0:
+						dodge::GetSingleton()->NormalAttack_attempt_dodge(refr, &dodge_directions_tk_reactive);
+						break;
+					case 1:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_all);
+						break;
+					}
+				}
+				continue;
 			}
 		}
-		return RE::BSContainer::ForEachResult::kContinue;
-	});
+	}
 }
 
 void dodge::react_to_bash(RE::Actor* a_attacker, float attack_range)
@@ -612,52 +611,52 @@ void dodge::react_to_bash(RE::Actor* a_attacker, float attack_range)
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
 	}
-	RE::TESObjectREFR* _a_attacker = a_attacker->As<RE::TESObjectREFR>();
+	auto combatGroup = a_attacker->GetCombatGroup();
+	if (combatGroup) {
+		for (auto it = combatGroup->targets.begin(); it != combatGroup->targets.end(); ++it) {
+			if (it->targetHandle && it->targetHandle.get().get()) {
+				RE::Actor* refr = it->targetHandle.get().get();
+				if (refr->GetPosition().GetDistance(a_attacker->GetPosition()) <= attack_range) {
+					
+					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
+						continue;
+					}
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
+					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
+					if (!CTarget) {
+						continue;
+					}
+					if (!ValhallaUtils::is_adversary(refr, a_attacker)) {
+						continue;
+					}
 
-	RE::TES::GetSingleton()->ForEachReferenceInRange(_a_attacker, attack_range, [&](RE::TESObjectREFR& _refr) {
-		if (!_refr.IsDisabled() && _refr.Is3DLoaded() && _refr.GetFormType() == RE::FormType::ActorCharacter && _refr.GetPosition().GetDistance(_a_attacker->GetPosition()) <= attack_range) {
-			RE::Actor* refr = _refr.As<RE::Actor>();
-			
-			if (!refr) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!Utils::Actor::isHumanoid(refr)) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
-			if (!CTarget){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!ValhallaUtils::is_adversary(refr, a_attacker)){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
+					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
+					auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
-			RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-			auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
 
-			float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
+					if (abs(angle) > attackAngle) {
+						continue;
+					}
 
-			if (abs(angle) > attackAngle) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-
-			switch (settings::iDodgeAI_Framework) {
-			case 0:
-				dodge::GetSingleton()->Bash_attempt_dodge(refr, &dodge_directions_tk_reactive);
-				break;
-			case 1:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
-				break;
+					switch (settings::iDodgeAI_Framework) {
+					case 0:
+						dodge::GetSingleton()->Bash_attempt_dodge(refr, &dodge_directions_tk_reactive);
+						break;
+					case 1:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_all);
+						break;
+					}
+				}
+				continue;
 			}
 		}
-		return RE::BSContainer::ForEachResult::kContinue;
-	});
+	}
 }
 
 void dodge::react_to_bash_sprint(RE::Actor* a_attacker, float attack_range)
@@ -665,52 +664,52 @@ void dodge::react_to_bash_sprint(RE::Actor* a_attacker, float attack_range)
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
 	}
-	RE::TESObjectREFR* _a_attacker = a_attacker->As<RE::TESObjectREFR>();
+	auto combatGroup = a_attacker->GetCombatGroup();
+	if (combatGroup) {
+		for (auto it = combatGroup->targets.begin(); it != combatGroup->targets.end(); ++it) {
+			if (it->targetHandle && it->targetHandle.get().get()) {
+				RE::Actor* refr = it->targetHandle.get().get();
+				if (refr->GetPosition().GetDistance(a_attacker->GetPosition()) <= attack_range) {
+					
+					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
+						continue;
+					}
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
+					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
+					if (!CTarget) {
+						continue;
+					}
+					if (!ValhallaUtils::is_adversary(refr, a_attacker)) {
+						continue;
+					}
 
-	RE::TES::GetSingleton()->ForEachReferenceInRange(_a_attacker, attack_range, [&](RE::TESObjectREFR& _refr) {
-		if (!_refr.IsDisabled() && _refr.Is3DLoaded() && _refr.GetFormType() == RE::FormType::ActorCharacter && _refr.GetPosition().GetDistance(_a_attacker->GetPosition()) <= attack_range) {
-			RE::Actor* refr = _refr.As<RE::Actor>();
+					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
+					auto               angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
-			if (!refr) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!Utils::Actor::isHumanoid(refr)) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
-			if (!CTarget){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!ValhallaUtils::is_adversary(refr, a_attacker)){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
+					float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
 
-			RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-			auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					if (abs(angle) > attackAngle) {
+						continue;
+					}
 
-			float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
-
-			if (abs(angle) > attackAngle) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-
-			switch (settings::iDodgeAI_Framework) {
-			case 0:
-				dodge::GetSingleton()->BashSprint_attempt_dodge(refr, &dodge_directions_tk_reactive);
-				break;
-			case 1:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
-				break;
+					switch (settings::iDodgeAI_Framework) {
+					case 0:
+						dodge::GetSingleton()->BashSprint_attempt_dodge(refr, &dodge_directions_tk_reactive);
+						break;
+					case 1:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_all);
+						break;
+					}
+				}
+				continue;
 			}
 		}
-		return RE::BSContainer::ForEachResult::kContinue;
-	});
+	}
 }
 
 void dodge::react_to_ranged(RE::Actor* a_attacker, float attack_range)
@@ -718,101 +717,102 @@ void dodge::react_to_ranged(RE::Actor* a_attacker, float attack_range)
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
 	}
-	RE::TESObjectREFR* _a_attacker = a_attacker->As<RE::TESObjectREFR>();
+	auto combatGroup = a_attacker->GetCombatGroup();
+	if (combatGroup) {
+		for (auto it = combatGroup->targets.begin(); it != combatGroup->targets.end(); ++it) {
+			if (it->targetHandle && it->targetHandle.get().get()) {
+				RE::Actor* refr = it->targetHandle.get().get();
+				if (refr->GetPosition().GetDistance(a_attacker->GetPosition()) <= attack_range) {
+					
+					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
+						continue;
+					}
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
+					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
+					if (!CTarget) {
+						continue;
+					}
+					if (!ValhallaUtils::is_adversary(refr, a_attacker)) {
+						continue;
+					}
 
-	RE::TES::GetSingleton()->ForEachReferenceInRange(_a_attacker, attack_range, [&](RE::TESObjectREFR& _refr) {
-		if (!_refr.IsDisabled() && _refr.Is3DLoaded() && _refr.GetFormType() == RE::FormType::ActorCharacter && _refr.GetPosition().GetDistance(_a_attacker->GetPosition()) <= attack_range) {
-			RE::Actor* refr = _refr.As<RE::Actor>();
-			
-			if (!refr) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!Utils::Actor::isHumanoid(refr)) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
-			if (!CTarget){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!ValhallaUtils::is_adversary(refr, a_attacker)){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			bool hasLOS = false;
-			if (refr->HasLineOfSight(a_attacker, hasLOS) && !hasLOS) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
+					bool hasLOS = false;
+					if (refr->HasLineOfSight(a_attacker, hasLOS) && !hasLOS) {
+						continue;
+					}
 
-			RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-			auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
+					auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
-			float attackAngle = attackdata ? attackdata->data.strikeAngle : 7.0f;
+					float attackAngle = attackdata ? attackdata->data.strikeAngle : 7.0f;
 
-			if (abs(angle) > attackAngle) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			int bHeavyarmour = 0;
-			auto Body = refr->GetWornArmor(RE::BGSBipedObjectForm::BipedObjectSlot::kBody);
-			auto Helm = refr->GetWornArmor(RE::BGSBipedObjectForm::BipedObjectSlot::kHair);
-			auto Shield = refr->GetEquippedObject(true);
-			if (Body) {
-				switch (Body->GetArmorType()) {
-				case RE::BIPED_MODEL::ArmorType::kHeavyArmor:
-					bHeavyarmour += 1;
-					break;
-				case RE::BIPED_MODEL::ArmorType::kLightArmor:
-					bHeavyarmour += 0;
-					break;
-				case RE::BIPED_MODEL::ArmorType::kClothing:
-					bHeavyarmour += 0;
-					break;
+					if (abs(angle) > attackAngle) {
+						continue;
+					}
+					int  bHeavyarmour = 0;
+					auto Body = refr->GetWornArmor(RE::BGSBipedObjectForm::BipedObjectSlot::kBody);
+					auto Helm = refr->GetWornArmor(RE::BGSBipedObjectForm::BipedObjectSlot::kHair);
+					auto Shield = refr->GetEquippedObject(true);
+					if (Body) {
+						switch (Body->GetArmorType()) {
+						case RE::BIPED_MODEL::ArmorType::kHeavyArmor:
+							bHeavyarmour += 1;
+							break;
+						case RE::BIPED_MODEL::ArmorType::kLightArmor:
+							bHeavyarmour += 0;
+							break;
+						case RE::BIPED_MODEL::ArmorType::kClothing:
+							bHeavyarmour += 0;
+							break;
+						}
+					} else {
+						bHeavyarmour += 0;
+					}
+
+					if (Helm) {
+						switch (Helm->GetArmorType()) {
+						case RE::BIPED_MODEL::ArmorType::kHeavyArmor:
+							bHeavyarmour += 1;
+							break;
+						case RE::BIPED_MODEL::ArmorType::kLightArmor:
+							bHeavyarmour += 0;
+							break;
+						case RE::BIPED_MODEL::ArmorType::kClothing:
+							bHeavyarmour += 0;
+							break;
+						}
+					} else {
+						bHeavyarmour += 0;
+					}
+
+					if (Shield && Shield->IsArmor()) {
+						bHeavyarmour += 1;
+					} else {
+						bHeavyarmour += 0;
+					}
+
+					switch (settings::iDodgeAI_Framework) {
+					case 0:
+						if (bHeavyarmour >= 2 && (refr->GetEquippedObject(false)->As<RE::TESObjectWEAP>()->IsMelee())) {
+							dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_ranged);
+						} else {
+							dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
+						}
+						break;
+					case 1:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+						break;
+					}
 				}
-			} else {
-				bHeavyarmour += 0;
-			}
-
-			if (Helm) {
-				switch (Helm->GetArmorType()) {
-				case RE::BIPED_MODEL::ArmorType::kHeavyArmor:
-					bHeavyarmour += 1;
-					break;
-				case RE::BIPED_MODEL::ArmorType::kLightArmor:
-					bHeavyarmour += 0;
-					break;
-				case RE::BIPED_MODEL::ArmorType::kClothing:
-					bHeavyarmour += 0;
-					break;
-				}
-			} else {
-				bHeavyarmour += 0;
-			}
-
-			if (Shield && Shield->IsArmor()){
-				bHeavyarmour += 1;
-			} else {
-				bHeavyarmour += 0;
-			}
-
-			switch (settings::iDodgeAI_Framework) {
-			case 0:
-				if (bHeavyarmour >= 2 && (refr->GetEquippedObject(false)->As<RE::TESObjectWEAP>()->IsMelee())) {
-					dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_ranged);
-				} else {
-					dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
-				}
-				break;
-			case 1:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
-				break;
+				continue;
 			}
 		}
-		return RE::BSContainer::ForEachResult::kContinue;
-	});
+	}
 }
 
 void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
@@ -820,56 +820,57 @@ void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
 	}
-	RE::TESObjectREFR* _a_attacker = a_attacker->As<RE::TESObjectREFR>();
+	auto combatGroup = a_attacker->GetCombatGroup();
+	if (combatGroup) {
+		for (auto it = combatGroup->targets.begin(); it != combatGroup->targets.end(); ++it) {
+			if (it->targetHandle && it->targetHandle.get().get()) {
+				RE::Actor* refr = it->targetHandle.get().get();
+				if (refr->GetPosition().GetDistance(a_attacker->GetPosition()) <= attack_range) {
+					
+					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
+						continue;
+					}
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
+					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
+					if (!CTarget) {
+						continue;
+					}
+					if (!ValhallaUtils::is_adversary(refr, a_attacker)) {
+						continue;
+					}
 
-	RE::TES::GetSingleton()->ForEachReferenceInRange(_a_attacker, attack_range, [&](RE::TESObjectREFR& _refr) {
-		if (!_refr.IsDisabled() && _refr.Is3DLoaded() && _refr.GetFormType() == RE::FormType::ActorCharacter && _refr.GetPosition().GetDistance(_a_attacker->GetPosition()) <= attack_range) {
-			RE::Actor* refr = _refr.As<RE::Actor>();
+					bool hasLOS = false;
+					if (refr->HasLineOfSight(a_attacker, hasLOS) && !hasLOS) {
+						continue;
+					}
 
-			if (!refr) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!Utils::Actor::isHumanoid(refr)) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
-			if (!CTarget){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!ValhallaUtils::is_adversary(refr, a_attacker)){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			bool hasLOS = false;
-			if (refr->HasLineOfSight(a_attacker, hasLOS) && !hasLOS) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
+					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
+					auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
-			RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-			auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
 
-			float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
+					if (abs(angle) > attackAngle) {
+						continue;
+					}
 
-			if (abs(angle) > attackAngle) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-
-			switch (settings::iDodgeAI_Framework) {
-			case 0:
-				dodge::GetSingleton()->Shouts_Spells_attempt_dodge(refr, &dodge_directions_tk_reactive);
-				break;
-			case 1:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
-				break;
+					switch (settings::iDodgeAI_Framework) {
+					case 0:
+						dodge::GetSingleton()->Shouts_Spells_attempt_dodge(refr, &dodge_directions_tk_reactive);
+						break;
+					case 1:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+						break;
+					}
+				}
+				continue;
 			}
 		}
-		return RE::BSContainer::ForEachResult::kContinue;
-	});
+	}
 }
 
 void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_range)
@@ -877,56 +878,57 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
 	}
-	RE::TESObjectREFR* _a_attacker = a_attacker->As<RE::TESObjectREFR>();
+	auto combatGroup = a_attacker->GetCombatGroup();
+	if (combatGroup) {
+		for (auto it = combatGroup->targets.begin(); it != combatGroup->targets.end(); ++it) {
+			if (it->targetHandle && it->targetHandle.get().get()) {
+				RE::Actor* refr = it->targetHandle.get().get();
+				if (refr->GetPosition().GetDistance(a_attacker->GetPosition()) <= attack_range) {
+					
+					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
+						continue;
+					}
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
+					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
+					if (!CTarget) {
+						continue;
+					}
+					if (!ValhallaUtils::is_adversary(refr, a_attacker)) {
+						continue;
+					}
 
-	RE::TES::GetSingleton()->ForEachReferenceInRange(_a_attacker, attack_range, [&](RE::TESObjectREFR& _refr) {
-		if (!_refr.IsDisabled() && _refr.Is3DLoaded() && _refr.GetFormType() == RE::FormType::ActorCharacter && _refr.GetPosition().GetDistance(_a_attacker->GetPosition()) <= attack_range) {
-			RE::Actor* refr = _refr.As<RE::Actor>();
+					bool hasLOS = false;
+					if (refr->HasLineOfSight(a_attacker, hasLOS) && !hasLOS) {
+						continue;
+					}
 
-			if (!refr) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!Utils::Actor::isHumanoid(refr)) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
-			if (!CTarget){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			if (!ValhallaUtils::is_adversary(refr, a_attacker)){
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-			bool hasLOS = false;
-			if (refr->HasLineOfSight(a_attacker, hasLOS) && !hasLOS) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
+					RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
+					auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
 
-			RE::BGSAttackData* attackdata = Utils::get_attackData(a_attacker);
-			auto angle = Utils::get_angle_he_me(refr, a_attacker, attackdata);
+					float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
 
-			float attackAngle = attackdata ? attackdata->data.strikeAngle : 35.0f;
+					if (abs(angle) > attackAngle) {
+						continue;
+					}
 
-			if (abs(angle) > attackAngle) {
-				return RE::BSContainer::ForEachResult::kContinue;
-			}
-
-			switch (settings::iDodgeAI_Framework) {
-			case 0:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
-				break;
-			case 1:
-				dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
-				break;
+					switch (settings::iDodgeAI_Framework) {
+					case 0:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
+						break;
+					case 1:
+						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+						break;
+					}
+				}
+				continue;
 			}
 		}
-		return RE::BSContainer::ForEachResult::kContinue;
-	});
+	}
 }
 
 //void dodge::set_dodge_phase(RE::Actor* a_dodger, bool a_isDodging)
