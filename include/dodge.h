@@ -20,6 +20,8 @@ enum dodge_direction
 	kLeftForward = 8
 };
 typedef std::vector<dodge_direction> dodge_dir_set;
+typedef float (*tActor_GetReach)(RE::Actor* a_this);
+static REL::Relocation<tActor_GetReach> Actor_GetReach{ RELOCATION_ID(37588, 38538) };
 
 const dodge_dir_set dodge_directions_tk_horizontal = { dodge_direction::kLeft, dodge_direction::kRight };
 const dodge_dir_set dodge_directions_tk_back = { dodge_direction::kBackward };
@@ -147,8 +149,10 @@ public:
 	//bool get_is_dodging(RE::Actor* a_actor);
 
 	float Get_ReactiveDodge_Distance(RE::Actor *actor);
+	float Get_ReactiveDodge_Reach(RE::Actor *actor);
 	bool GetAttackSpell(RE::Actor* actor, bool lefthand = false);
 	bool GetEquippedShout(RE::Actor* actor);
+	
 	
 
 private:
