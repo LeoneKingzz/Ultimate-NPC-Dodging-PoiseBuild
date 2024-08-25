@@ -462,9 +462,9 @@ void dodge::react_to_melee(RE::Actor* a_attacker, float attack_range)
 					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
 						continue;
 					}
-					// if (!Utils::Actor::isHumanoid(refr)) {
-					// 	continue;
-					// }
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
@@ -515,9 +515,9 @@ void dodge::react_to_melee_power(RE::Actor* a_attacker, float attack_range)
 					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
 						continue;
 					}
-					// if (!Utils::Actor::isHumanoid(refr)) {
-					// 	continue;
-					// }
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
@@ -568,9 +568,9 @@ void dodge::react_to_melee_normal(RE::Actor* a_attacker, float attack_range)
 					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
 						continue;
 					}
-					// if (!Utils::Actor::isHumanoid(refr)) {
-					// 	continue;
-					// }
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
@@ -621,9 +621,9 @@ void dodge::react_to_bash(RE::Actor* a_attacker, float attack_range)
 					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
 						continue;
 					}
-					// if (!Utils::Actor::isHumanoid(refr)) {
-					// 	continue;
-					// }
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
@@ -674,9 +674,9 @@ void dodge::react_to_bash_sprint(RE::Actor* a_attacker, float attack_range)
 					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
 						continue;
 					}
-					// if (!Utils::Actor::isHumanoid(refr)) {
-					// 	continue;
-					// }
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
@@ -727,9 +727,9 @@ void dodge::react_to_ranged(RE::Actor* a_attacker, float attack_range)
 					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
 						continue;
 					}
-					// if (!Utils::Actor::isHumanoid(refr)) {
-					// 	continue;
-					// }
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
@@ -830,9 +830,9 @@ void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
 					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
 						continue;
 					}
-					// if (!Utils::Actor::isHumanoid(refr)) {
-					// 	continue;
-					// }
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
@@ -888,9 +888,9 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 					if (refr->IsPlayerRef() || refr->IsDead() || !refr->IsInCombat()) {
 						continue;
 					}
-					// if (!Utils::Actor::isHumanoid(refr)) {
-					// 	continue;
-					// }
+					if (!Utils::Actor::isHumanoid(refr)) {
+						continue;
+					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
