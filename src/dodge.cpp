@@ -462,7 +462,7 @@ bool dodge::GetEquippedShout(RE::Actor* actor){
 	static auto ShockKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageShock");
 
 	if (limboshout && limboshout->Is(RE::FormType::Shout) && currentVar){
-		if (limboshout->As<RE::TESShout>()->variations->spell){
+		if (limboshout->As<RE::TESShout>()->variations[currentVar].spell) {
 			auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
 			auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
 			for (auto Effect : Effect_List) {
