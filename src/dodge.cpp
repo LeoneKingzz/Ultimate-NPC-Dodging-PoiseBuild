@@ -423,7 +423,7 @@ bool dodge::GetAttackSpell(RE::Actor* actor, bool lefthand) {
 						if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)){
 							result = true;
 							break;
-						}else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(frostKeyword)){
+						}else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)){
 							result = true;
 							break;
 						}
@@ -440,7 +440,7 @@ bool dodge::GetAttackSpell(RE::Actor* actor, bool lefthand) {
 						if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
 							result = true;
 							break;
-						} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(frostKeyword)) {
+						} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
 							result = true;
 							break;
 						}
@@ -456,20 +456,21 @@ bool dodge::GetAttackSpell(RE::Actor* actor, bool lefthand) {
 bool dodge::GetEquippedShout(RE::Actor* actor){
 	bool result = false;
 	auto limboshout = actor->GetActorRuntimeData().selectedPower;
+	auto currentVar = actor->GetActorRuntimeData().currentProcess->high->currentShoutVariation;
 	static auto fireKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFire");
 	static auto frostKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFrost");
 	static auto ShockKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageShock");
 
-	if (limboshout && limboshout->Is(RE::FormType::Shout)){
+	if (limboshout && limboshout->Is(RE::FormType::Shout) && currentVar){
 		if (limboshout->As<RE::TESShout>()->variations->spell){
-			auto eSpell = limboshout->As<RE::TESShout>()->variations->spell;
+			auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
 			auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
 			for (auto Effect : Effect_List) {
 				if (Effect && Effect->baseEffect) {
 					if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
 						result = true;
 						break;
-					} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(frostKeyword)) {
+					} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
 						result = true;
 						break;
 					}
