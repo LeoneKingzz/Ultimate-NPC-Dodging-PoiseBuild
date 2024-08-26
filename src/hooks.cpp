@@ -57,32 +57,32 @@ namespace hooks
 			if ((!Utils::Actor::isHumanoid(actor) || Utils::Actor::isPowerAttacking(actor)) 
 			&& (!(actor->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kBash || actor->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kHit))) {
 				
-				dodge::GetSingleton()->react_to_melee(actor, dodge::GetSingleton()->Get_ReactiveDodge_Reach(actor) * 1.5f);
+				dodge::GetSingleton()->react_to_melee(actor, dodge::GetSingleton()->Get_ReactiveDodge_Distance(actor));
 
 			} else if ((!Utils::Actor::isPowerAttacking(actor) && actor->AsActorState()->GetAttackState() != RE::ATTACK_STATE_ENUM::kBash) 
 			&& (actor->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kDraw || actor->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kSwing)) {
 				
-				dodge::GetSingleton()->react_to_melee(actor, dodge::GetSingleton()->Get_ReactiveDodge_Reach(actor) * 1.5f);
+				dodge::GetSingleton()->react_to_melee(actor, dodge::GetSingleton()->Get_ReactiveDodge_Distance(actor));
 
 			} else if (actor->AsActorState()->IsSprinting() && actor->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kBash) {
 				bool bMaxsuWeaponParry_InWeaponParry = false;
 				if ((actor)
 						->GetGraphVariableBool("bMaxsuWeaponParry_InWeaponParry", bMaxsuWeaponParry_InWeaponParry) &&
 					!bMaxsuWeaponParry_InWeaponParry) {
-					dodge::GetSingleton()->react_to_bash_sprint(actor, dodge::GetSingleton()->Get_ReactiveDodge_Reach(actor) * 1.5f);
+					dodge::GetSingleton()->react_to_bash_sprint(actor, dodge::GetSingleton()->Get_ReactiveDodge_Distance(actor));
 				}
 			} else if (!actor->AsActorState()->IsSprinting() && actor->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kBash && Utils::Actor::isPowerAttacking(actor)) {
 				bool bMaxsuWeaponParry_InWeaponParry = false;
 				if ((actor)
 						->GetGraphVariableBool("bMaxsuWeaponParry_InWeaponParry", bMaxsuWeaponParry_InWeaponParry) &&
 					!bMaxsuWeaponParry_InWeaponParry) {
-					dodge::GetSingleton()->react_to_bash(actor, dodge::GetSingleton()->Get_ReactiveDodge_Reach(actor) * 1.5f);
+					dodge::GetSingleton()->react_to_bash(actor, dodge::GetSingleton()->Get_ReactiveDodge_Distance(actor));
 				}
 			}
 			break;
 
 		case "Voice_SpellFire_Event"_h:
-			if (GetEquippedShouts(actor)){
+			if (GetEquippedShouts(actor) && dodge::GetSingleton()->GetEquippedShout(actor)) {
 				dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
 			}
 			//dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
@@ -102,12 +102,12 @@ namespace hooks
 
 		case "PowerAttack_Start_end"_h:
 		case "NextAttackInitiate"_h:
-			dodge::GetSingleton()->react_to_melee_normal(actor, dodge::GetSingleton()->Get_ReactiveDodge_Reach(actor) * 1.5f);
+			dodge::GetSingleton()->react_to_melee_normal(actor, dodge::GetSingleton()->Get_ReactiveDodge_Distance(actor));
 			break;
 
 		case "BowFullDrawn"_h:
 
-			dodge::GetSingleton()->react_to_ranged(actor, dodge::GetSingleton()->Get_ReactiveDodge_Reach(actor));
+			dodge::GetSingleton()->react_to_ranged(actor, dodge::GetSingleton()->Get_ReactiveDodge_Distance(actor));
 			break;
 		}
 
@@ -118,6 +118,7 @@ namespace hooks
 
 	bool GetEquippedShouts(RE::Actor* actor)
 	{
+		bool result = true;
 		auto limboshout = actor->GetActorRuntimeData().selectedPower;
 
 		if (limboshout && limboshout->Is(RE::FormType::Shout)) {
@@ -128,12 +129,13 @@ namespace hooks
 			case "Serio_EDR_GravityBlastShoutPAAR"_h:
 			case "Serio_EDR_GravityBlastShoutODAH"_h:
 			case "KS_SlowTime_Alduin"_h:
-				return false;
+				result = false;
+				break;
 			default:
-			    return true;
+				break;
 			}
 		}
-		return false;
+		return result;
 	}
 
 	class OurEventSink : public RE::BSTEventSink<RE::TESCombatEvent>

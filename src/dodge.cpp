@@ -406,37 +406,79 @@ float dodge::Get_ReactiveDodge_Reach(RE::Actor* actor)
 }
 
 bool dodge::GetAttackSpell(RE::Actor* actor, bool lefthand) {
+
+	bool result = false;
 	auto limbospell = actor->GetActorRuntimeData().currentProcess;
+	static auto fireKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFire");
+	static auto frostKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFrost");
+	static auto ShockKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageShock");
 
 	if (limbospell) {
 		if (lefthand){
 			auto eSpell = limbospell->GetEquippedLeftHand();
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
-				if (eSpell->As<RE::SpellItem>()->avEffectSetting->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
-					return true;
+				auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
+				for (auto Effect : Effect_List){
+					if (Effect && Effect->baseEffect){
+						if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)){
+							result = true;
+							break;
+						}else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(frostKeyword)){
+							result = true;
+							break;
+						}
+					}
+					continue;
 				}
 			}
 		}else {
 			auto eSpell = limbospell->GetEquippedRightHand();
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
-				if (eSpell->As<RE::SpellItem>()->avEffectSetting->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
-					return true;
+				auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
+				for (auto Effect : Effect_List) {
+					if (Effect && Effect->baseEffect) {
+						if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
+							result = true;
+							break;
+						} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(frostKeyword)) {
+							result = true;
+							break;
+						}
+					}
+					continue;
 				}
 			}
 		}
 	}
-	return false;
+	return result;
 }
 
 bool dodge::GetEquippedShout(RE::Actor* actor){
+	bool result = false;
 	auto limboshout = actor->GetActorRuntimeData().selectedPower;
+	static auto fireKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFire");
+	static auto frostKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFrost");
+	static auto ShockKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageShock");
 
 	if (limboshout && limboshout->Is(RE::FormType::Shout)){
-		if (limboshout->As<RE::TESShout>()->variations->spell->avEffectSetting->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)){
-			return true;
+		if (limboshout->As<RE::TESShout>()->variations->spell){
+			auto eSpell = limboshout->As<RE::TESShout>()->variations->spell;
+			auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
+			for (auto Effect : Effect_List) {
+				if (Effect && Effect->baseEffect) {
+					if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
+						result = true;
+						break;
+					} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(frostKeyword)) {
+						result = true;
+						break;
+					}
+				}
+				continue;
+			}
 		}
 	}
-	return false;
+	return result;
 }
 
 
