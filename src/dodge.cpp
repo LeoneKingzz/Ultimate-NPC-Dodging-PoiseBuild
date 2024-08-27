@@ -1,12 +1,12 @@
 #include "settings.h"
 #pragma warning(disable: 4100)
-// #include <chrono>
-// #include <iostream>
-// #include <windows.h>
+#include <chrono>
+#include <iostream>
+#include <windows.h>
 
-// using Clock = std::chrono::steady_clock;
-// std::chrono::time_point<std::chrono::steady_clock> start, now;
-// std::chrono::milliseconds                          duration;
+using Clock = std::chrono::steady_clock;
+std::chrono::time_point<std::chrono::steady_clock> start, now;
+std::chrono::milliseconds                          duration;
 
 //#define PI 3.1415926535f
 using writeLock = std::unique_lock<std::shared_mutex>;
@@ -1030,6 +1030,32 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 
 					if (abs(angle) > attackAngle) {
 						continue;
+					}
+
+					if (lefthand){
+						float check = dodge::GetSingleton()->GetSpellRange_Reaction(refr, refr->GetPosition().GetDistance(a_attacker->GetPosition()), true);
+						if (check > 0.5f){
+							auto check_int = (static_cast<int>(check - 0.5f)) * 1000;
+							now = Clock::now();
+							duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+							if (duration.count() >= check_int) {
+								switch (settings::iDodgeAI_Framework) {
+								case 0:
+									dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
+									break;
+								case 1:
+									dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+									break;
+								}
+							}
+						}
+					}else {
+						float check = dodge::GetSingleton()->GetSpellRange_Reaction(refr, refr->GetPosition().GetDistance(a_attacker->GetPosition()));
+						if (check > 0.5f) {
+
+						}else{
+
+						}
 					}
 
 					switch (settings::iDodgeAI_Framework) {
