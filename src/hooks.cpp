@@ -90,7 +90,7 @@ namespace hooks
 
 		case "MLh_SpellFire_Event"_h:
 			if (dodge::GetSingleton()->GetAttackSpell(actor, true)) {
-				dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 3000.0f);
+				dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 3000.0f, true);
 			}
 			break;
 
