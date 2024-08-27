@@ -123,7 +123,7 @@ public:
 	void react_to_bash_sprint(RE::Actor* a_attacker, float attack_range);
 	void react_to_ranged(RE::Actor* a_attacker, float attack_range);
 	void react_to_shouts_spells(RE::Actor* a_attacker, float attack_range);
-	void react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_range);
+	void react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_range, bool lefthand = false);
 
 
 	static float GetProtaganist_ReflexScore(RE::Actor* a_actor);
@@ -152,6 +152,8 @@ public:
 	float Get_ReactiveDodge_Reach(RE::Actor *actor);
 	bool GetAttackSpell(RE::Actor* actor, bool lefthand = false);
 	bool GetEquippedShout(RE::Actor* actor);
+	float GetShoutRange_Reaction(RE::Actor* actor, float distance);
+	float GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefthand = false);
 	
 	
 

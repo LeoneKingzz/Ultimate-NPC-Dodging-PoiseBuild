@@ -1,5 +1,12 @@
 #include "settings.h"
 #pragma warning(disable: 4100)
+// #include <chrono>
+// #include <iostream>
+// #include <windows.h>
+
+// using Clock = std::chrono::steady_clock;
+// std::chrono::time_point<std::chrono::steady_clock> start, now;
+// std::chrono::milliseconds                          duration;
 
 //#define PI 3.1415926535f
 using writeLock = std::unique_lock<std::shared_mutex>;
@@ -464,7 +471,7 @@ bool dodge::GetEquippedShout(RE::Actor* actor){
 	if (limboshout && limboshout->Is(RE::FormType::Shout) && currentVar){
 		if (limboshout->As<RE::TESShout>()->variations[currentVar].spell) {
 			auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
-			auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
+			auto Effect_List = eSpell->effects;
 			for (auto Effect : Effect_List) {
 				if (Effect && Effect->baseEffect) {
 					if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
@@ -472,6 +479,66 @@ bool dodge::GetEquippedShout(RE::Actor* actor){
 						break;
 					} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
 						result = true;
+						break;
+					}
+				}
+				continue;
+			}
+		}
+	}
+	return result;
+}
+
+float dodge::GetShoutRange_Reaction(RE::Actor* actor, float distance){
+	float result = 0;
+	auto limboshout = actor->GetActorRuntimeData().selectedPower;
+	auto currentVar = actor->GetActorRuntimeData().currentProcess->high->currentShoutVariation;
+
+	auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
+	if(eSpell->GetDelivery() == RE::MagicSystem::Delivery::kAimed){
+		auto Effect_List = eSpell->effects;
+		for (auto Effect : Effect_List) {
+			if (Effect && Effect->baseEffect) {
+				if (Effect->baseEffect->data.projectileBase) {
+					float speed = Effect->baseEffect->data.projectileBase->data.speed;
+					result = distance / speed;
+					break;
+				}
+			}
+			continue;
+		}
+	}
+	return result;
+}
+
+float dodge::GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefthand){
+	float result = 0;
+	auto limbospell = actor->GetActorRuntimeData().currentProcess;
+
+	if (lefthand) {
+		auto eSpell = limbospell->GetEquippedLeftHand()->As<RE::SpellItem>();
+		if (eSpell->GetDelivery() == RE::MagicSystem::Delivery::kAimed) {
+			auto Effect_List = eSpell->effects;
+			for (auto Effect : Effect_List) {
+				if (Effect && Effect->baseEffect) {
+					if (Effect->baseEffect->data.projectileBase) {
+						float speed = Effect->baseEffect->data.projectileBase->data.speed;
+						result = distance / speed;
+						break;
+					}
+				}
+				continue;
+			}
+		}
+	} else {
+		auto eSpell = limbospell->GetEquippedRightHand()->As<RE::SpellItem>();
+		if (eSpell->GetDelivery() == RE::MagicSystem::Delivery::kAimed) {
+			auto Effect_List = eSpell->effects;
+			for (auto Effect : Effect_List) {
+				if (Effect && Effect->baseEffect) {
+					if (Effect->baseEffect->data.projectileBase) {
+						float speed = Effect->baseEffect->data.projectileBase->data.speed;
+						result = distance / speed;
 						break;
 					}
 				}
@@ -922,7 +989,7 @@ void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
 	}
 }
 
-void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_range)
+void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_range, bool lefthand)
 {
 	if (!settings::bDodgeAI_Reactive_enable) {
 		return;
