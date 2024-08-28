@@ -974,13 +974,28 @@ void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 
-					switch (settings::iDodgeAI_Framework) {
-					case 0:
-						dodge::GetSingleton()->Shouts_Spells_attempt_dodge(refr, &dodge_directions_tk_reactive);
-						break;
-					case 1:
-						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
-						break;
+					float check = dodge::GetSingleton()->GetShoutRange_Reaction(refr, refr->GetPosition().GetDistance(a_attacker->GetPosition()));
+					if (check > 0.5f) {
+						auto check_int = (static_cast<int>(check - 0.5f)) * 1000;
+						for (start = Clock::now(), now = start; now < start + std::chrono::milliseconds{ check_int }; now = Clock::now()) {
+						}
+						switch (settings::iDodgeAI_Framework) {
+						case 0:
+							dodge::GetSingleton()->Shouts_Spells_attempt_dodge(refr, &dodge_directions_tk_reactive);
+							break;
+						case 1:
+							dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+							break;
+						}
+					} else {
+						switch (settings::iDodgeAI_Framework) {
+						case 0:
+							dodge::GetSingleton()->Shouts_Spells_attempt_dodge(refr, &dodge_directions_tk_reactive);
+							break;
+						case 1:
+							dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+							break;
+						}
 					}
 				}
 				continue;
