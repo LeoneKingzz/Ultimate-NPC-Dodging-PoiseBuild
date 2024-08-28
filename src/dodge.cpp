@@ -501,7 +501,7 @@ float dodge::GetShoutRange_Reaction(RE::Actor* actor, float distance){
 			if (Effect && Effect->baseEffect) {
 				if (Effect->baseEffect->data.projectileBase) {
 					float speed = Effect->baseEffect->data.projectileBase->data.speed;
-					if (speed){
+					if (speed && speed != 0.0){
 						result = distance / speed;
 						break;
 					}
@@ -525,7 +525,7 @@ float dodge::GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefth
 				if (Effect && Effect->baseEffect) {
 					if (Effect->baseEffect->data.projectileBase) {
 						float speed = Effect->baseEffect->data.projectileBase->data.speed;
-						if (speed) {
+						if (speed && speed != 0.0) {
 							result = distance / speed;
 							break;
 						}
@@ -542,7 +542,7 @@ float dodge::GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefth
 				if (Effect && Effect->baseEffect) {
 					if (Effect->baseEffect->data.projectileBase) {
 						float speed = Effect->baseEffect->data.projectileBase->data.speed;
-						if (speed) {
+						if (speed && speed != 0.0) {
 							result = distance / speed;
 							break;
 						}
