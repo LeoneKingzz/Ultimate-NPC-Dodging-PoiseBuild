@@ -469,7 +469,7 @@ bool dodge::GetEquippedShout(RE::Actor* actor){
 	static auto ShockKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageShock");
 
 	if (limboshout && limboshout->Is(RE::FormType::Shout) && currentVar){
-		if (limboshout->As<RE::TESShout>()->variations[currentVar].spell) {
+		if (limboshout->As<RE::TESShout>()->variations && limboshout->As<RE::TESShout>()->variations[currentVar].spell) {
 			auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
 			auto Effect_List = eSpell->effects;
 			for (auto Effect : Effect_List) {
@@ -495,7 +495,7 @@ float dodge::GetShoutRange_Reaction(RE::Actor* actor, float distance){
 	auto currentVar = actor->GetActorRuntimeData().currentProcess->high->currentShoutVariation;
 
 	if (limboshout && limboshout->Is(RE::FormType::Shout) && currentVar){
-		if (limboshout->As<RE::TESShout>()->variations[currentVar].spell){
+		if (limboshout->As<RE::TESShout>()->variations && limboshout->As<RE::TESShout>()->variations[currentVar].spell) {
 			auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
 			if (eSpell->GetDelivery() == RE::MagicSystem::Delivery::kAimed) {
 				auto Effect_List = eSpell->effects;
