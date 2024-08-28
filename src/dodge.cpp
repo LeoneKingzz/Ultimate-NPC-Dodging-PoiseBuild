@@ -562,7 +562,6 @@ float dodge::GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefth
 			}
 		}
 	}
-
 	return result;
 }
 
