@@ -992,7 +992,7 @@ void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
 
 					float check = dodge::GetSingleton()->GetShoutRange_Reaction(refr, refr->GetPosition().GetDistance(a_attacker->GetPosition()));
 					if (check > 0.5f) {
-						auto check_int = static_cast<int>((check - 0.5f) * 1000.0f);
+						auto check_int = static_cast<int>(check * 1000.0f);
 						for (start = Clock::now(), now = start; now < start + std::chrono::milliseconds{ check_int }; now = Clock::now()) {
 						}
 						switch (settings::iDodgeAI_Framework) {
@@ -1066,7 +1066,7 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 					if (lefthand){
 						float check = dodge::GetSingleton()->GetSpellRange_Reaction(refr, refr->GetPosition().GetDistance(a_attacker->GetPosition()), true);
 						if (check > 0.5f){
-							auto check_int = static_cast<int>((check - 0.5f) * 1000.0f);
+							auto check_int = static_cast<int>(check * 1000.0f);
 							for (start = Clock::now(), now = start; now < start + std::chrono::milliseconds{ check_int }; now = Clock::now()) {
 							}
 							switch (settings::iDodgeAI_Framework) {
@@ -1090,7 +1090,7 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 					}else {
 						float check = dodge::GetSingleton()->GetSpellRange_Reaction(refr, refr->GetPosition().GetDistance(a_attacker->GetPosition()));
 						if (check > 0.5f) {
-							auto check_int = static_cast<int>((check - 0.5f) * 1000.0f);
+							auto check_int = static_cast<int>(check * 1000.0f);
 							for (start = Clock::now(), now = start; now < start + std::chrono::milliseconds{ check_int }; now = Clock::now()) {
 							}
 							switch (settings::iDodgeAI_Framework) {

@@ -83,20 +83,20 @@ namespace hooks
 
 		case "Voice_SpellFire_Event"_h:
 			if (GetEquippedShouts(actor) && dodge::GetSingleton()->GetEquippedShout(actor)) {
-				dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
+				dodge::GetSingleton()->react_to_shouts_spells(actor, 5000.0f);
 			}
-			//dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
+			//dodge::GetSingleton()->react_to_shouts_spells(actor, 5000.0f);
 			break;
 
 		case "MLh_SpellFire_Event"_h:
 			if (dodge::GetSingleton()->GetAttackSpell(actor, true)) {
-				dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 3000.0f, true);
+				dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 5000.0f, true);
 			}
 			break;
 
 		case "MRh_SpellFire_Event"_h:
 			if (dodge::GetSingleton()->GetAttackSpell(actor)) {
-				dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 3000.0f);
+				dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 5000.0f);
 			}
 			break;
 
