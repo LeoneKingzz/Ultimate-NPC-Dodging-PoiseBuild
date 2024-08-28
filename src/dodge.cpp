@@ -494,20 +494,24 @@ float dodge::GetShoutRange_Reaction(RE::Actor* actor, float distance){
 	auto limboshout = actor->GetActorRuntimeData().selectedPower;
 	auto currentVar = actor->GetActorRuntimeData().currentProcess->high->currentShoutVariation;
 
-	auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
-	if(eSpell->GetDelivery() == RE::MagicSystem::Delivery::kAimed){
-		auto Effect_List = eSpell->effects;
-		for (auto Effect : Effect_List) {
-			if (Effect && Effect->baseEffect) {
-				if (Effect->baseEffect->data.projectileBase) {
-					float speed = Effect->baseEffect->data.projectileBase->data.speed;
-					if (speed && speed != 0.0){
-						result = distance / speed;
-						break;
+	if (limboshout && limboshout->Is(RE::FormType::Shout) && currentVar){
+		if (limboshout->As<RE::TESShout>()->variations[currentVar].spell){
+			auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
+			if (eSpell->GetDelivery() == RE::MagicSystem::Delivery::kAimed) {
+				auto Effect_List = eSpell->effects;
+				for (auto Effect : Effect_List) {
+					if (Effect && Effect->baseEffect) {
+						if (Effect->baseEffect->data.projectileBase) {
+							float speed = Effect->baseEffect->data.projectileBase->data.speed;
+							if (speed && speed != 0.0) {
+								result = distance / speed;
+								break;
+							}
+						}
 					}
+					continue;
 				}
 			}
-			continue;
 		}
 	}
 	return result;
@@ -517,41 +521,48 @@ float dodge::GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefth
 	float result = 0;
 	auto limbospell = actor->GetActorRuntimeData().currentProcess;
 
-	if (lefthand) {
-		auto eSpell = limbospell->GetEquippedLeftHand()->As<RE::SpellItem>();
-		if (eSpell->GetDelivery() == RE::MagicSystem::Delivery::kAimed) {
-			auto Effect_List = eSpell->effects;
-			for (auto Effect : Effect_List) {
-				if (Effect && Effect->baseEffect) {
-					if (Effect->baseEffect->data.projectileBase) {
-						float speed = Effect->baseEffect->data.projectileBase->data.speed;
-						if (speed && speed != 0.0) {
-							result = distance / speed;
-							break;
+	if (limbospell){
+		if (lefthand) {
+			auto eSpell = limbospell->GetEquippedLeftHand();
+			if (eSpell && eSpell->Is(RE::FormType::Spell)){
+				if (eSpell->As<RE::SpellItem>()->GetDelivery() == RE::MagicSystem::Delivery::kAimed) {
+					auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
+					for (auto Effect : Effect_List) {
+						if (Effect && Effect->baseEffect) {
+							if (Effect->baseEffect->data.projectileBase) {
+								float speed = Effect->baseEffect->data.projectileBase->data.speed;
+								if (speed && speed != 0.0) {
+									result = distance / speed;
+									break;
+								}
+							}
 						}
+						continue;
 					}
 				}
-				continue;
 			}
-		}
-	} else {
-		auto eSpell = limbospell->GetEquippedRightHand()->As<RE::SpellItem>();
-		if (eSpell->GetDelivery() == RE::MagicSystem::Delivery::kAimed) {
-			auto Effect_List = eSpell->effects;
-			for (auto Effect : Effect_List) {
-				if (Effect && Effect->baseEffect) {
-					if (Effect->baseEffect->data.projectileBase) {
-						float speed = Effect->baseEffect->data.projectileBase->data.speed;
-						if (speed && speed != 0.0) {
-							result = distance / speed;
-							break;
+		} else {
+			auto eSpell = limbospell->GetEquippedRightHand();
+			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
+				if (eSpell->As<RE::SpellItem>()->GetDelivery() == RE::MagicSystem::Delivery::kAimed) {
+					auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
+					for (auto Effect : Effect_List) {
+						if (Effect && Effect->baseEffect) {
+							if (Effect->baseEffect->data.projectileBase) {
+								float speed = Effect->baseEffect->data.projectileBase->data.speed;
+								if (speed && speed != 0.0) {
+									result = distance / speed;
+									break;
+								}
+							}
 						}
+						continue;
 					}
 				}
-				continue;
 			}
 		}
 	}
+
 	return result;
 }
 
