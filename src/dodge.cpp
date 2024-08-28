@@ -1036,35 +1036,51 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 						float check = dodge::GetSingleton()->GetSpellRange_Reaction(refr, refr->GetPosition().GetDistance(a_attacker->GetPosition()), true);
 						if (check > 0.5f){
 							auto check_int = (static_cast<int>(check - 0.5f)) * 1000;
-							now = Clock::now();
-							duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
-							if (duration.count() >= check_int) {
-								switch (settings::iDodgeAI_Framework) {
-								case 0:
-									dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
-									break;
-								case 1:
-									dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
-									break;
-								}
+							for (start = Clock::now(), now = start; now < start + std::chrono::milliseconds{ check_int }; now = Clock::now()) {
+							}
+							switch (settings::iDodgeAI_Framework) {
+							case 0:
+								dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
+								break;
+							case 1:
+								dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+								break;
+							}
+						} else {
+							switch (settings::iDodgeAI_Framework) {
+							case 0:
+								dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
+								break;
+							case 1:
+								dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+								break;
 							}
 						}
 					}else {
 						float check = dodge::GetSingleton()->GetSpellRange_Reaction(refr, refr->GetPosition().GetDistance(a_attacker->GetPosition()));
 						if (check > 0.5f) {
+							auto check_int = (static_cast<int>(check - 0.5f)) * 1000;
 
+							for (start = Clock::now(), now = start; now < start + std::chrono::milliseconds{ check_int }; now = Clock::now()) {
+							}
+							switch (settings::iDodgeAI_Framework) {
+							case 0:
+								dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
+								break;
+							case 1:
+								dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+								break;
+							}
 						}else{
-
+							switch (settings::iDodgeAI_Framework) {
+							case 0:
+								dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
+								break;
+							case 1:
+								dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
+								break;
+							}
 						}
-					}
-
-					switch (settings::iDodgeAI_Framework) {
-					case 0:
-						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_horizontal);
-						break;
-					case 1:
-						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_dmco_reactive);
-						break;
 					}
 				}
 				continue;
