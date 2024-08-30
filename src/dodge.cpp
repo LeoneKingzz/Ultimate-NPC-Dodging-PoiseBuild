@@ -469,22 +469,30 @@ bool dodge::GetEquippedShout(RE::Actor* actor){
 	static auto ShockKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageShock");
 
 	if (limboshout && limboshout->Is(RE::FormType::Shout) && currentVar){
-		if (limboshout->As<RE::TESShout>()->variations && limboshout->As<RE::TESShout>()->variations[currentVar].spell) {
-			auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
-			auto Effect_List = eSpell->effects;
-			for (auto Effect : Effect_List) {
-				if (Effect && Effect->baseEffect) {
-					if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
-						result = true;
-						break;
-					} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
-						result = true;
-						break;
+		try
+		{
+			if (limboshout->As<RE::TESShout>()->variations && limboshout->As<RE::TESShout>()->variations[currentVar].spell) {
+				auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
+				auto Effect_List = eSpell->effects;
+				for (auto Effect : Effect_List) {
+					if (Effect && Effect->baseEffect) {
+						if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
+							result = true;
+							break;
+						} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
+							result = true;
+							break;
+						}
 					}
+					continue;
 				}
-				continue;
 			}
 		}
+		catch(...)
+		{
+			//do nothing
+		}
+		
 	}
 	return result;
 }
@@ -1507,7 +1515,8 @@ void dodge::TRKE_dodge(RE::Actor* actor, const char* a_event, bool backingoff)
 	}
 
 	if (settings::bHasSilentRollperk_enable == 1) {
-		auto bSilentRoll = actor->HasPerk(RE::BGSPerk::LookupByEditorID("SilentRoll")->As<RE::BGSPerk>());
+		
+		auto bSilentRoll = actor->HasPerk(RE::BGSPerk::LookupByID(RE::FormID(0x105F23))->As<RE::BGSPerk>());
 		if (dodge::GetSingleton()->GenerateRandomInt(0, 10) <= settings::iDodgeRoll_ActorScaled_Chance && bSilentRoll && actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= DodgeRoll_staminacost) {
 			actor->SetGraphVariableInt("iStep", 0);
 			actor->SetGraphVariableBool("bUND_IsDodgeRoll", true);
