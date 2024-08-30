@@ -1515,8 +1515,8 @@ void dodge::TRKE_dodge(RE::Actor* actor, const char* a_event, bool backingoff)
 	}
 
 	if (settings::bHasSilentRollperk_enable == 1) {
-		
-		auto bSilentRoll = actor->HasPerk(RE::BGSPerk::LookupByID(RE::FormID(0x105F23))->As<RE::BGSPerk>());
+		auto data = RE::TESDataHandler::GetSingleton();
+		auto bSilentRoll = actor->HasPerk(data->LookupForm<RE::BGSPerk>(0x105F23, "Skyrim.esm"));
 		if (dodge::GetSingleton()->GenerateRandomInt(0, 10) <= settings::iDodgeRoll_ActorScaled_Chance && bSilentRoll && actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= DodgeRoll_staminacost) {
 			actor->SetGraphVariableInt("iStep", 0);
 			actor->SetGraphVariableBool("bUND_IsDodgeRoll", true);
