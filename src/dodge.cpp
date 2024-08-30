@@ -608,6 +608,9 @@ void dodge::react_to_melee(RE::Actor* a_attacker, float attack_range)
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
+					if (refr->HasKeywordString("UND_ExcludeDodge")) {
+						continue;
+					}
 					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
 					if (!CTarget) {
 						continue;
@@ -659,6 +662,9 @@ void dodge::react_to_melee_power(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					if (refr->HasKeywordString("UND_ExcludeDodge")) {
 						continue;
 					}
 					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
@@ -714,6 +720,9 @@ void dodge::react_to_melee_normal(RE::Actor* a_attacker, float attack_range)
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
+					if (refr->HasKeywordString("UND_ExcludeDodge")) {
+						continue;
+					}
 					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
 					if (!CTarget) {
 						continue;
@@ -765,6 +774,9 @@ void dodge::react_to_bash(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					if (refr->HasKeywordString("UND_ExcludeDodge")) {
 						continue;
 					}
 					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
@@ -820,6 +832,9 @@ void dodge::react_to_bash_sprint(RE::Actor* a_attacker, float attack_range)
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
+					if (refr->HasKeywordString("UND_ExcludeDodge")) {
+						continue;
+					}
 					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
 					if (!CTarget) {
 						continue;
@@ -871,6 +886,9 @@ void dodge::react_to_ranged(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					if (refr->HasKeywordString("UND_ExcludeDodge")) {
 						continue;
 					}
 					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
@@ -976,6 +994,9 @@ void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
 					}
+					if (refr->HasKeywordString("UND_ExcludeDodge")) {
+						continue;
+					}
 					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();
 					if (!CTarget) {
 						continue;
@@ -1056,6 +1077,9 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 						continue;
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
+						continue;
+					}
+					if (refr->HasKeywordString("UND_ExcludeDodge")) {
 						continue;
 					}
 					auto CTarget = refr->GetActorRuntimeData().currentCombatTarget.get().get();

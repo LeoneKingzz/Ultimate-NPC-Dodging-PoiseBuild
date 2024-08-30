@@ -166,6 +166,10 @@ namespace hooks
 				return RE::BSEventNotifyControl::kContinue;
 			}
 
+			if (Protagonist->HasKeywordString("UND_ExcludeDodge")) {
+				return RE::BSEventNotifyControl::kContinue;
+			}
+
 			auto getcombatstate = event->newState.get();
 
 			if (getcombatstate == RE::ACTOR_COMBAT_STATE::kCombat) {
