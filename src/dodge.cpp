@@ -490,7 +490,7 @@ bool dodge::GetEquippedShout(RE::Actor* actor){
 		}
 		catch(...)
 		{
-			//do nothing
+			return result;
 		}
 		
 	}
