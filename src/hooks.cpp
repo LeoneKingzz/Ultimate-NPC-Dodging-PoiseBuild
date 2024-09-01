@@ -203,10 +203,7 @@ namespace hooks
 		RE::BSEventNotifyControl ProcessEvent(const RE::TESSpellCastEvent* event, RE::BSTEventSource<RE::TESSpellCastEvent>*)
 		{
 			auto Protagonist = event->object->As<RE::Actor>();
-
-			if (!Protagonist->IsPlayerRef()) {
-				return RE::BSEventNotifyControl::kContinue;
-			}
+			
 			bool bUseAltAtk = false;
 
 			if (Protagonist->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && !bUseAltAtk) {
