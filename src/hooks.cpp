@@ -213,9 +213,10 @@ namespace hooks
 			auto eSpell = RE::TESForm::LookupByID(F_ID);
 
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
-				dodge::GetSingleton()->GetAttackSpell_Alt(Protagonist, eSpell->As<RE::SpellItem>());
+				if (dodge::GetSingleton()->GetAttackSpell_Alt(Protagonist, eSpell->As<RE::SpellItem>())){
+					dodge::GetSingleton()->react_to_shouts_spells_fast(Protagonist, 3000.0f);
+				}
 			}
-
 			return RE::BSEventNotifyControl::kContinue;
 		}
 	};
