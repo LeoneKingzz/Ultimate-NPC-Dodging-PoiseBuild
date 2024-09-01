@@ -82,8 +82,11 @@ namespace hooks
 			break;
 
 		case "Voice_SpellFire_Event"_h:
-			if (GetEquippedShouts(actor) && dodge::GetSingleton()->GetEquippedShout(actor)) {
-				dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
+			bool bUseAltAtk = false;
+			if (actor->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && !bUseAltAtk) {
+				if (GetEquippedShouts(actor) && dodge::GetSingleton()->GetEquippedShout(actor)) {
+					dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
+				}
 			}
 			//dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
 			break;
@@ -182,13 +185,54 @@ namespace hooks
 		}
 	};
 
+	class AltSpell_ES : public RE::BSTEventSink<RE::TESSpellCastEvent>
+	{
+		AltSpell_ES() = default;
+		AltSpell_ES(const AltSpell_ES&) = delete;
+		AltSpell_ES(AltSpell_ES&&) = delete;
+		AltSpell_ES& operator=(const AltSpell_ES&) = delete;
+		AltSpell_ES& operator=(AltSpell_ES&&) = delete;
+
+	public:
+		static AltSpell_ES* GetSingleton()
+		{
+			static AltSpell_ES singleton;
+			return &singleton;
+		}
+
+		RE::BSEventNotifyControl ProcessEvent(const RE::TESSpellCastEvent* event, RE::BSTEventSource<RE::TESSpellCastEvent>*)
+		{
+			auto Protagonist = event->object->As<RE::Actor>();
+
+			if (!Protagonist->IsPlayerRef()) {
+				return RE::BSEventNotifyControl::kContinue;
+			}
+			bool bUseAltAtk = false;
+
+			if (Protagonist->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && !bUseAltAtk) {
+				return RE::BSEventNotifyControl::kContinue;
+			}
+			auto F_ID = event->spell;
+			auto data = RE::TESDataHandler::GetSingleton();
+			auto eSpell = RE::TESForm::LookupByID(F_ID);
+
+			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
+				dodge::GetSingleton()->GetAttackSpell_Alt(Protagonist, eSpell->As<RE::SpellItem>());
+			}
+
+			return RE::BSEventNotifyControl::kContinue;
+		}
+	};
+
 	void IHooks::install()
 	{
 		auto eventSink = OurEventSink::GetSingleton();
+		auto altSink = AltSpell_ES::GetSingleton();
 
 		// ScriptSource
 		auto* eventSourceHolder = RE::ScriptEventSourceHolder::GetSingleton();
 		eventSourceHolder->AddEventSink<RE::TESCombatEvent>(eventSink);
+		eventSourceHolder->AddEventSink<RE::TESSpellCastEvent>(altSink);
 	}
 
 	ptr_CombatPath on_combatBehavior_backoff_createPath::create_path(RE::Actor* a_actor, RE::NiPoint3* a_newPos, float a3, int speed_ind)

@@ -151,6 +151,7 @@ public:
 	float Get_ReactiveDodge_Distance(RE::Actor *actor);
 	float Get_ReactiveDodge_Reach(RE::Actor *actor);
 	bool GetAttackSpell(RE::Actor* actor, bool lefthand = false);
+	bool GetAttackSpell_Alt(RE::Actor* actor, RE::SpellItem* a_spell);
 	bool GetEquippedShout(RE::Actor* actor);
 	float GetShoutRange_Reaction(RE::Actor* actor, float distance);
 	float GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefthand = false);

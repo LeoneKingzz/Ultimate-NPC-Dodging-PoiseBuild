@@ -460,6 +460,28 @@ bool dodge::GetAttackSpell(RE::Actor* actor, bool lefthand) {
 	return result;
 }
 
+bool dodge::GetAttackSpell_Alt(RE::Actor* actor, RE::SpellItem* a_spell)
+{
+	bool result = false;
+	static auto fireKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFire");
+	static auto frostKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFrost");
+	static auto ShockKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageShock");
+
+	auto Effect_List = a_spell->As<RE::SpellItem>()->effects;
+	for (auto Effect : Effect_List) {
+		if (Effect && Effect->baseEffect) {
+			if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
+				result = true;
+				break;
+			} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
+				result = true;
+				break;
+			}
+		}
+		continue;
+	}
+}
+
 bool dodge::GetEquippedShout(RE::Actor* actor){
 	bool result = false;
 	auto limboshout = actor->GetActorRuntimeData().selectedPower;
