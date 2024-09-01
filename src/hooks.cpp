@@ -15,6 +15,7 @@ namespace hooks
 
 		//std::string eventTag = a_event->tag.c_str();
 		RE::Actor* actor = const_cast<RE::TESObjectREFR*>(a_event.holder)->As<RE::Actor>();
+		bool bUseAltAtk = false;
 		switch (hash(a_event.tag.c_str(), a_event.tag.size())) {
 		case "TKDR_DodgeStart"_h:
 		    if (!actor->IsPlayerRef()) {
@@ -82,7 +83,6 @@ namespace hooks
 			break;
 
 		case "Voice_SpellFire_Event"_h:
-			bool bUseAltAtk = false;
 			if (actor->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && !bUseAltAtk) {
 				if (GetEquippedShouts(actor) && dodge::GetSingleton()->GetEquippedShout(actor)) {
 					dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
