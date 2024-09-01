@@ -424,35 +424,41 @@ bool dodge::GetAttackSpell(RE::Actor* actor, bool lefthand) {
 		if (lefthand){
 			auto eSpell = limbospell->GetEquippedLeftHand();
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
-				auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
-				for (auto Effect : Effect_List){
-					if (Effect && Effect->baseEffect){
-						if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)){
-							result = true;
-							break;
-						}else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)){
-							result = true;
-							break;
+				auto rSpell = eSpell->As<RE::SpellItem>();
+				if (!(rSpell->GetSpellType() == RE::MagicSystem::SpellType::kPower || rSpell->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower)){
+					auto Effect_List = rSpell->effects;
+					for (auto Effect : Effect_List) {
+						if (Effect && Effect->baseEffect) {
+							if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
+								result = true;
+								break;
+							} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
+								result = true;
+								break;
+							}
 						}
+						continue;
 					}
-					continue;
-				}
+				}	
 			}
 		}else {
 			auto eSpell = limbospell->GetEquippedRightHand();
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
-				auto Effect_List = eSpell->As<RE::SpellItem>()->effects;
-				for (auto Effect : Effect_List) {
-					if (Effect && Effect->baseEffect) {
-						if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
-							result = true;
-							break;
-						} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
-							result = true;
-							break;
+				auto rSpell = eSpell->As<RE::SpellItem>();
+				if (!(rSpell->GetSpellType() == RE::MagicSystem::SpellType::kPower || rSpell->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower)) {
+					auto Effect_List = rSpell->effects;
+					for (auto Effect : Effect_List) {
+						if (Effect && Effect->baseEffect) {
+							if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
+								result = true;
+								break;
+							} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
+								result = true;
+								break;
+							}
 						}
+						continue;
 					}
-					continue;
 				}
 			}
 		}
@@ -502,18 +508,20 @@ bool dodge::GetEquippedShout(RE::Actor* actor){
 		{
 			if (limboshout->As<RE::TESShout>()->variations && limboshout->As<RE::TESShout>()->variations[currentVar].spell) {
 				auto eSpell = limboshout->As<RE::TESShout>()->variations[currentVar].spell;
-				auto Effect_List = eSpell->effects;
-				for (auto Effect : Effect_List) {
-					if (Effect && Effect->baseEffect) {
-						if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
-							result = true;
-							break;
-						} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
-							result = true;
-							break;
+				if (!(eSpell->GetSpellType() == RE::MagicSystem::SpellType::kPower || eSpell->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower)){
+					auto Effect_List = eSpell->effects;
+					for (auto Effect : Effect_List) {
+						if (Effect && Effect->baseEffect) {
+							if (Effect->baseEffect->data.flags.all(RE::EffectSetting::EffectSettingData::Flag::kHostile)) {
+								result = true;
+								break;
+							} else if (Effect->baseEffect->HasKeyword(fireKeyword) || Effect->baseEffect->HasKeyword(frostKeyword) || Effect->baseEffect->HasKeyword(ShockKeyword)) {
+								result = true;
+								break;
+							}
 						}
+						continue;
 					}
-					continue;
 				}
 			}
 		}
