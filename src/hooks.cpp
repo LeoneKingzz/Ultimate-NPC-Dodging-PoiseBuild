@@ -158,8 +158,11 @@ namespace hooks
 
 		RE::BSEventNotifyControl ProcessEvent(const RE::TESCombatEvent* event, RE::BSTEventSource<RE::TESCombatEvent>*)
 		{
-			decltype(auto) sourceName = event->actor;
-			auto Protagonist = sourceName->As<RE::Actor>();
+			auto Protagonist = event->actor->As<RE::Actor>();
+
+			if (!Protagonist){
+				return RE::BSEventNotifyControl::kContinue;
+			}
 
 			if (Protagonist->IsPlayerRef() || !Utils::Actor::isHumanoid(Protagonist)) {
 				return RE::BSEventNotifyControl::kContinue;
