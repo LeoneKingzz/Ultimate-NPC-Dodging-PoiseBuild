@@ -214,7 +214,7 @@ namespace hooks
 
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
 				if (dodge::GetSingleton()->GetAttackSpell_Alt(Protagonist, eSpell->As<RE::SpellItem>())){
-					dodge::GetSingleton()->react_to_shouts_spells_fast(Protagonist, 3000.0f);
+					dodge::GetSingleton()->react_to_shouts_spells(Protagonist, 3000.0f);
 				}
 			}
 			return RE::BSEventNotifyControl::kContinue;
