@@ -460,7 +460,7 @@ bool dodge::GetAttackSpell(RE::Actor* actor, bool lefthand) {
 	return result;
 }
 
-bool dodge::GetAttackSpell_Alt(RE::Actor* actor, RE::SpellItem* a_spell)
+bool dodge::GetAttackSpell_Alt(RE::SpellItem* a_spell)
 {
 	bool result = false;
 	static auto fireKeyword = RE::TESForm::LookupByEditorID<RE::BGSKeyword>("MagicDamageFire");

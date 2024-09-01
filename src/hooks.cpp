@@ -203,18 +203,20 @@ namespace hooks
 		RE::BSEventNotifyControl ProcessEvent(const RE::TESSpellCastEvent* event, RE::BSTEventSource<RE::TESSpellCastEvent>*)
 		{
 			auto Protagonist = event->object->As<RE::Actor>();
-			
-			bool bUseAltAtk = false;
 
-			if (Protagonist->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && !bUseAltAtk) {
+			if (!Protagonist){
 				return RE::BSEventNotifyControl::kContinue;
 			}
-			auto F_ID = event->spell;
-			auto eSpell = RE::TESForm::LookupByID(F_ID);
+
+			auto eSpell = RE::TESForm::LookupByID(event->spell);
 
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
-				if (dodge::GetSingleton()->GetAttackSpell_Alt(Protagonist, eSpell->As<RE::SpellItem>())){
-					dodge::GetSingleton()->react_to_shouts_spells(Protagonist, 3000.0f);
+				auto rSpell = eSpell->As<RE::SpellItem>();
+				bool bUseAltAtk = false;
+				if ((Protagonist->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && bUseAltAtk) || rSpell->GetSpellType() == RE::MagicSystem::SpellType::kPower || rSpell->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower) {
+					if (dodge::GetSingleton()->GetAttackSpell_Alt(rSpell)) {
+						dodge::GetSingleton()->react_to_shouts_spells(Protagonist, 3000.0f);
+					}
 				}
 			}
 			return RE::BSEventNotifyControl::kContinue;
