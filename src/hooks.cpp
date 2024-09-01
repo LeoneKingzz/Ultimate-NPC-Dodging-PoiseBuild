@@ -213,7 +213,6 @@ namespace hooks
 				return RE::BSEventNotifyControl::kContinue;
 			}
 			auto F_ID = event->spell;
-			auto data = RE::TESDataHandler::GetSingleton();
 			auto eSpell = RE::TESForm::LookupByID(F_ID);
 
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
