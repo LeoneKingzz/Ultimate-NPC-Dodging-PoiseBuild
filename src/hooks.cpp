@@ -15,7 +15,7 @@ namespace hooks
 
 		//std::string eventTag = a_event->tag.c_str();
 		RE::Actor* actor = const_cast<RE::TESObjectREFR*>(a_event.holder)->As<RE::Actor>();
-		bool bUseAltAtk = false;
+		//bool bUseAltAtk = false;
 		switch (hash(a_event.tag.c_str(), a_event.tag.size())) {
 		case "TKDR_DodgeStart"_h:
 		    if (!actor->IsPlayerRef()) {
@@ -82,26 +82,26 @@ namespace hooks
 			}
 			break;
 
-		case "Voice_SpellFire_Event"_h:
-			if (actor->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && !bUseAltAtk) {
-				if (GetEquippedShouts(actor) && dodge::GetSingleton()->GetEquippedShout(actor)) {
-					dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
-				}
-			}
-			//dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
-			break;
+		// case "Voice_SpellFire_Event"_h:
+		// 	if (actor->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && !bUseAltAtk) {
+		// 		if (GetEquippedShouts(actor) && dodge::GetSingleton()->GetEquippedShout(actor)) {
+		// 			dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
+		// 		}
+		// 	}
+		// 	//dodge::GetSingleton()->react_to_shouts_spells(actor, 3000.0f);
+		// 	break;
 
-		case "MLh_SpellFire_Event"_h:
-			if (dodge::GetSingleton()->GetAttackSpell(actor, true)) {
-				dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 3000.0f, true);
-			}
-			break;
+		// case "MLh_SpellFire_Event"_h:
+		// 	if (dodge::GetSingleton()->GetAttackSpell(actor, true)) {
+		// 		dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 3000.0f, true);
+		// 	}
+		// 	break;
 
-		case "MRh_SpellFire_Event"_h:
-			if (dodge::GetSingleton()->GetAttackSpell(actor)) {
-				dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 3000.0f);
-			}
-			break;
+		// case "MRh_SpellFire_Event"_h:
+		// 	if (dodge::GetSingleton()->GetAttackSpell(actor)) {
+		// 		dodge::GetSingleton()->react_to_shouts_spells_fast(actor, 3000.0f);
+		// 	}
+		// 	break;
 
 		case "PowerAttack_Start_end"_h:
 		case "NextAttackInitiate"_h:
@@ -119,29 +119,27 @@ namespace hooks
 
 	std::unordered_map<uint64_t, animEventHandler::FnProcessEvent> animEventHandler::fnHash;
 
-	bool GetEquippedShouts(RE::Actor* actor)
+	bool GetEquippedShouts(RE::SpellItem* a_spell)
 	{
 		bool result = true;
-		auto limboshout = actor->GetActorRuntimeData().selectedPower;
-
-		if (limboshout && limboshout->Is(RE::FormType::Shout)) {
-			std::string Lsht = (clib_util::editorID::get_editorID(limboshout));
-			switch (hash(Lsht.c_str(), Lsht.size())) {
-			case "HoY_PullofNirnShout_Miraak"_h:
-			case "SlowTimeShout"_h:
-			case "Serio_EDR_GravityBlastShoutPAAR"_h:
-			case "Serio_EDR_GravityBlastShoutODAH"_h:
-			case "KS_SlowTime_Alduin"_h:
-				result = false;
-				break;
-			default:
-				break;
-			}
+		std::string Lsht = (clib_util::editorID::get_editorID(a_spell));
+		switch (hash(Lsht.c_str(), Lsht.size())) {
+		case "HoY_PullofNirn_Miraak"_h:
+		case "VoiceSlowTime1"_h:
+		case "VoiceSlowTime2"_h:
+		case "VoiceSlowTime3"_h:
+		case "Serio_EDR_GravityBlastSpellPAAR"_h:
+		case "Serio_EDR_GravityBlastSpellODAH"_h:
+		case "VoiceAlduinTimeStop"_h:
+			result = false;
+			break;
+		default:
+			break;
 		}
 		return result;
 	}
 
-	class OurEventSink : public RE::BSTEventSink<RE::TESCombatEvent>
+	class OurEventSink : public RE::BSTEventSink<RE::TESCombatEvent>, public RE::BSTEventSink<RE::TESSpellCastEvent>
 	{
 		OurEventSink() = default;
 		OurEventSink(const OurEventSink&) = delete;
@@ -186,28 +184,12 @@ namespace hooks
 
 			return RE::BSEventNotifyControl::kContinue;
 		}
-	};
-
-	class AltSpell_ES : public RE::BSTEventSink<RE::TESSpellCastEvent>
-	{
-		AltSpell_ES() = default;
-		AltSpell_ES(const AltSpell_ES&) = delete;
-		AltSpell_ES(AltSpell_ES&&) = delete;
-		AltSpell_ES& operator=(const AltSpell_ES&) = delete;
-		AltSpell_ES& operator=(AltSpell_ES&&) = delete;
-
-	public:
-		static AltSpell_ES* GetSingleton()
-		{
-			static AltSpell_ES singleton;
-			return &singleton;
-		}
 
 		RE::BSEventNotifyControl ProcessEvent(const RE::TESSpellCastEvent* event, RE::BSTEventSource<RE::TESSpellCastEvent>*)
 		{
 			auto Protagonist = event->object->As<RE::Actor>();
 
-			if (!Protagonist){
+			if (!Protagonist) {
 				return RE::BSEventNotifyControl::kContinue;
 			}
 
@@ -215,11 +197,27 @@ namespace hooks
 
 			if (eSpell && eSpell->Is(RE::FormType::Spell)) {
 				auto rSpell = eSpell->As<RE::SpellItem>();
-				bool bUseAltAtk = false;
-				if ((Protagonist->GetGraphVariableBool("bUseAltAtk", bUseAltAtk) && bUseAltAtk) || rSpell->GetSpellType() == RE::MagicSystem::SpellType::kPower || rSpell->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower) {
+				switch (rSpell->GetSpellType()) {
+				case RE::MagicSystem::SpellType::kVoicePower:
+				case RE::MagicSystem::SpellType::kPower:
+				case RE::MagicSystem::SpellType::kLesserPower:
+					if (GetEquippedShouts(rSpell) && dodge::GetSingleton()->GetAttackSpell_Alt(rSpell)) {
+						dodge::GetSingleton()->react_to_shouts_spells(Protagonist, 3000.0f);
+					}
+					break;
+				case RE::MagicSystem::SpellType::kSpell:
+				case RE::MagicSystem::SpellType::kScroll:
 					if (dodge::GetSingleton()->GetAttackSpell_Alt(rSpell)) {
 						dodge::GetSingleton()->react_to_shouts_spells(Protagonist, 3000.0f);
 					}
+					break;
+				case RE::MagicSystem::SpellType::kStaffEnchantment:
+					if (rSpell->GetDelivery() != RE::MagicSystem::Delivery::kTouch && dodge::GetSingleton()->GetAttackSpell_Alt(rSpell)) {
+						dodge::GetSingleton()->react_to_shouts_spells(Protagonist, 3000.0f);
+					}
+					break;
+				default:
+					break;
 				}
 			}
 			return RE::BSEventNotifyControl::kContinue;
@@ -229,17 +227,20 @@ namespace hooks
 	void IHooks::install()
 	{
 		auto eventSink = OurEventSink::GetSingleton();
-		auto altSink = AltSpell_ES::GetSingleton();
 
 		// ScriptSource
 		auto* eventSourceHolder = RE::ScriptEventSourceHolder::GetSingleton();
 		eventSourceHolder->AddEventSink<RE::TESCombatEvent>(eventSink);
-		eventSourceHolder->AddEventSink<RE::TESSpellCastEvent>(altSink);
+		eventSourceHolder->AddEventSink<RE::TESSpellCastEvent>(eventSink);
 	}
 
 	ptr_CombatPath on_combatBehavior_backoff_createPath::create_path(RE::Actor* a_actor, RE::NiPoint3* a_newPos, float a3, int speed_ind)
 	{
 		if (!Utils::Actor::isHumanoid(a_actor) || a_actor->HasKeywordString("UND_ExcludeDodge")) {
+			return _create_path(a_actor, a_newPos, a3, speed_ind);
+		}
+
+		if (!(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak"))) {
 			return _create_path(a_actor, a_newPos, a3, speed_ind);
 		}
 
@@ -261,6 +262,10 @@ namespace hooks
 			return _create_path(a_actor, a_newPos, a3, speed_ind);
 		}
 
+		if (!(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak"))) {
+			return _create_path(a_actor, a_newPos, a3, speed_ind);
+		}
+
 		switch (settings::iDodgeAI_Framework) {
 		case 0:
 			dodge::GetSingleton()->attempt_dodge(a_actor, &dodge_directions_tk_horizontal);
@@ -279,6 +284,10 @@ namespace hooks
 			return _create_path(a_actor, a_newPos, a3, speed_ind);
 		}
 
+		if (!(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak"))) {
+			return _create_path(a_actor, a_newPos, a3, speed_ind);
+		}
+
 		switch (settings::iDodgeAI_Framework) {
 		case 0:
 			dodge::GetSingleton()->attempt_dodge(a_actor, &dodge_directions_tk_back);
@@ -294,6 +303,10 @@ namespace hooks
 	ptr_CombatPath on_combatBehavior_dodgethreat_createPath::create_path(RE::Actor* a_actor, RE::NiPoint3* a_newPos, float a3, int speed_ind)
 	{
 		if (!Utils::Actor::isHumanoid(a_actor) || a_actor->HasKeywordString("UND_ExcludeDodge")) {
+			return _create_path(a_actor, a_newPos, a3, speed_ind);
+		}
+
+		if (!(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak"))) {
 			return _create_path(a_actor, a_newPos, a3, speed_ind);
 		}
 
