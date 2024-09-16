@@ -1803,13 +1803,9 @@ void dodge::do_dodge_VLSerana(RE::Actor* a_actor, dodge_direction a_direction)
 {
 	auto HdSingle = RE::TESDataHandler::GetSingleton();
 
-	logger::info("VL Serana do dodge initiate");
-
 	if (a_actor->HasKeywordString("VLS_Serana_Key")) {
-		logger::info("VL Serana actor found");
 		RE::TESGlobal* ZAngle = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x804, "VampireLordSerana.esp"));
 		if (ZAngle){
-			logger::info("VL Serana global value detected");
 			switch (a_direction) {
 			case kForward:
 				ZAngle->value = GetSingleton()->GenerateRandomFloat(-60.0f, 60.0f);
