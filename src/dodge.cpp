@@ -1302,9 +1302,7 @@ bool dodge::able_dodge(RE::Actor* a_actor)
 	bool bUND_InCombatFoundEnemy = false;
 
 	if (getrace_VLserana(a_actor)) {
-		if (!a_actor->IsInKillMove() && a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
-		&& !(attackState == RE::ATTACK_STATE_ENUM::kSwing || attackState == RE::ATTACK_STATE_ENUM::kHit  || attackState == RE::ATTACK_STATE_ENUM::kFollowThrough || attackState == RE::ATTACK_STATE_ENUM::kBash 
-		|| attackState == RE::ATTACK_STATE_ENUM::kBowDrawn || attackState == RE::ATTACK_STATE_ENUM::kBowReleasing || attackState == RE::ATTACK_STATE_ENUM::kBowFollowThrough)) {
+		if (!a_actor->IsInKillMove() && a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25 && !(attackState == RE::ATTACK_STATE_ENUM::kHit)) {
 			return true;
 		}else{
 			return false;
