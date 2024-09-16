@@ -1302,7 +1302,9 @@ bool dodge::able_dodge(RE::Actor* a_actor)
 	bool bUND_InCombatFoundEnemy = false;
 
 	if (getrace_VLserana(a_actor)) {
-		if (!a_actor->IsInKillMove()) {
+		if (!a_actor->IsInKillMove() && a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
+		&& !(attackState == RE::ATTACK_STATE_ENUM::kSwing || attackState == RE::ATTACK_STATE_ENUM::kHit  || attackState == RE::ATTACK_STATE_ENUM::kFollowThrough || attackState == RE::ATTACK_STATE_ENUM::kBash 
+		|| attackState == RE::ATTACK_STATE_ENUM::kBowDrawn || attackState == RE::ATTACK_STATE_ENUM::kBowReleasing || attackState == RE::ATTACK_STATE_ENUM::kBowFollowThrough)) {
 			return true;
 		}else{
 			return false;
@@ -1312,7 +1314,7 @@ bool dodge::able_dodge(RE::Actor* a_actor)
 	if (settings::bZUPA_mod_Check) {
 		const auto magicEffect = RE::TESForm::LookupByEditorID("zxlice_cooldownEffect")->As<RE::EffectSetting>();
 
-		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && !CombatTarget->AsActorState()->IsBleedingOut() && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
+		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
 		&& a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost 
 		&& !(attackState == RE::ATTACK_STATE_ENUM::kSwing || attackState == RE::ATTACK_STATE_ENUM::kHit  || attackState == RE::ATTACK_STATE_ENUM::kFollowThrough || attackState == RE::ATTACK_STATE_ENUM::kBash 
 		|| attackState == RE::ATTACK_STATE_ENUM::kBowDrawn || attackState == RE::ATTACK_STATE_ENUM::kBowReleasing || attackState == RE::ATTACK_STATE_ENUM::kBowFollowThrough) && !magicTarget->HasMagicEffect(magicEffect)) {
@@ -1320,15 +1322,14 @@ bool dodge::able_dodge(RE::Actor* a_actor)
 		}
 	} else if (settings::bUAPNG_mod_Check){
 		bool IUBusy = false;
-		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && !CombatTarget->AsActorState()->IsBleedingOut() && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
+		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
 		&& (a_actor->GetGraphVariableBool("IUBusy", IUBusy) && !IUBusy) && a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost 
 		&& !(attackState == RE::ATTACK_STATE_ENUM::kSwing || attackState == RE::ATTACK_STATE_ENUM::kHit  || attackState == RE::ATTACK_STATE_ENUM::kFollowThrough || attackState == RE::ATTACK_STATE_ENUM::kBash 
 		|| attackState == RE::ATTACK_STATE_ENUM::kBowDrawn || attackState == RE::ATTACK_STATE_ENUM::kBowReleasing || attackState == RE::ATTACK_STATE_ENUM::kBowFollowThrough)) {
 			return true;
 		}
-
 	} else{
-		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && !CombatTarget->AsActorState()->IsBleedingOut() && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
+		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
 		&& a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost 
 		&& !(attackState == RE::ATTACK_STATE_ENUM::kSwing || attackState == RE::ATTACK_STATE_ENUM::kHit  || attackState == RE::ATTACK_STATE_ENUM::kFollowThrough || attackState == RE::ATTACK_STATE_ENUM::kBash 
 		|| attackState == RE::ATTACK_STATE_ENUM::kBowDrawn || attackState == RE::ATTACK_STATE_ENUM::kBowReleasing || attackState == RE::ATTACK_STATE_ENUM::kBowFollowThrough)) {
@@ -1844,5 +1845,3 @@ void dodge::do_dodge_VLSerana(RE::Actor* a_actor, dodge_direction a_direction)
 		}
 	}
 }
-
-//a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25
