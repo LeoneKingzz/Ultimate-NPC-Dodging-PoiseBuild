@@ -693,6 +693,10 @@ void dodge::react_to_melee(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 
+					if(getrace_VLserana(refr)){
+						logger::info("VL Serana Detected");
+					}
+
 					switch (settings::iDodgeAI_Framework) {
 					case 0:
 						dodge::GetSingleton()->attempt_dodge(refr, &dodge_directions_tk_reactive);
@@ -751,6 +755,10 @@ void dodge::react_to_melee_power(RE::Actor* a_attacker, float attack_range)
 
 					if (abs(angle) > attackAngle) {
 						continue;
+					}
+
+					if(getrace_VLserana(refr)){
+						logger::info("VL Serana Detected");
 					}
 
 					switch (settings::iDodgeAI_Framework) {
@@ -813,6 +821,10 @@ void dodge::react_to_melee_normal(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 
+					if(getrace_VLserana(refr)){
+						logger::info("VL Serana Detected");
+					}
+
 					switch (settings::iDodgeAI_Framework) {
 					case 0:
 						dodge::GetSingleton()->NormalAttack_attempt_dodge(refr, &dodge_directions_tk_reactive);
@@ -873,6 +885,10 @@ void dodge::react_to_bash(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 
+					if(getrace_VLserana(refr)){
+						logger::info("VL Serana Detected");
+					}
+
 					switch (settings::iDodgeAI_Framework) {
 					case 0:
 						dodge::GetSingleton()->Bash_attempt_dodge(refr, &dodge_directions_tk_reactive);
@@ -931,6 +947,10 @@ void dodge::react_to_bash_sprint(RE::Actor* a_attacker, float attack_range)
 
 					if (abs(angle) > attackAngle) {
 						continue;
+					}
+
+					if(getrace_VLserana(refr)){
+						logger::info("VL Serana Detected");
 					}
 
 					switch (settings::iDodgeAI_Framework) {
@@ -996,6 +1016,10 @@ void dodge::react_to_ranged(RE::Actor* a_attacker, float attack_range)
 
 					if (abs(angle) > attackAngle) {
 						continue;
+					}
+
+					if(getrace_VLserana(refr)){
+						logger::info("VL Serana Detected");
 					}
 					int  bHeavyarmour = 0;
 					auto Body = refr->GetWornArmor(RE::BGSBipedObjectForm::BipedObjectSlot::kBody);
@@ -1108,6 +1132,10 @@ void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 
+					if(getrace_VLserana(refr)){
+						logger::info("VL Serana Detected");
+					}
+
 					switch (settings::iDodgeAI_Framework) {
 					case 0:
 						dodge::GetSingleton()->Shouts_Spells_attempt_dodge(refr, &dodge_directions_tk_reactive);
@@ -1195,6 +1223,10 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 
 					if (abs(angle) > attackAngle) {
 						continue;
+					}
+
+					if(getrace_VLserana(refr)){
+						logger::info("VL Serana Detected");
 					}
 
 					switch (settings::iDodgeAI_Framework) {
@@ -1338,12 +1370,15 @@ void dodge::attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_directions,
     auto DS = dodge::GetSingleton();
 	const float dodge_chance = a_forceDodge ? 1.0f : get_dodge_chance(a_actor, DS->Armourr, DS->Protagnist_Reflexess, DS->CStylee);
 
-	
 
 	std::mt19937 gen(rd());
 	
 	if (dodge::GetSingleton()->GenerateRandomFloat(0.0, 1.0) > dodge_chance) {
 		return;
+	}
+
+	if (getrace_VLserana(a_actor)) {
+		logger::info("VL Serana Detected attempt dodge stage");
 	}
 
 	/* Make a copy and shuffle directions. */
@@ -1353,6 +1388,9 @@ void dodge::attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_directions,
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
+			if (getrace_VLserana(a_actor)) {
+		        logger::info("VL Serana Detected navigate stage");
+	        }
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
@@ -1379,6 +1417,10 @@ void dodge::Powerattack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a
 		return;
 	}
 
+	if (getrace_VLserana(a_actor)) {
+		logger::info("VL Serana Detected attempt dodge stage");
+	}
+
 	/* Make a copy and shuffle directions. */
 	dodge_dir_set directions_shuffled = *a_directions;
 	std::shuffle(directions_shuffled.begin(), directions_shuffled.end(), gen);
@@ -1386,6 +1428,9 @@ void dodge::Powerattack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
+			if (getrace_VLserana(a_actor)) {
+		        logger::info("VL Serana Detected navigate stage");
+	        }
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
@@ -1412,6 +1457,10 @@ void dodge::NormalAttack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* 
 		return;
 	}
 
+	if (getrace_VLserana(a_actor)) {
+		logger::info("VL Serana Detected attempt dodge stage");
+	}
+
 	/* Make a copy and shuffle directions. */
 	dodge_dir_set directions_shuffled = *a_directions;
 	std::shuffle(directions_shuffled.begin(), directions_shuffled.end(), gen);
@@ -1419,6 +1468,9 @@ void dodge::NormalAttack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* 
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
+			if (getrace_VLserana(a_actor)) {
+		        logger::info("VL Serana Detected navigate stage");
+	        }
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
@@ -1446,6 +1498,10 @@ void dodge::Shouts_Spells_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set*
 		return;
 	}
 
+	if (getrace_VLserana(a_actor)) {
+		logger::info("VL Serana Detected attempt dodge stage");
+	}
+
 	/* Make a copy and shuffle directions. */
 	dodge_dir_set directions_shuffled = *a_directions;
 	std::shuffle(directions_shuffled.begin(), directions_shuffled.end(), gen);
@@ -1453,6 +1509,9 @@ void dodge::Shouts_Spells_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set*
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
+			if (getrace_VLserana(a_actor)) {
+		        logger::info("VL Serana Detected navigate stage");
+	        }
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
@@ -1479,6 +1538,10 @@ void dodge::Bash_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_direct
 		return;
 	}
 
+	if (getrace_VLserana(a_actor)) {
+		logger::info("VL Serana Detected attempt dodge stage");
+	}
+
 	/* Make a copy and shuffle directions. */
 	dodge_dir_set directions_shuffled = *a_directions;
 	std::shuffle(directions_shuffled.begin(), directions_shuffled.end(), gen);
@@ -1486,6 +1549,9 @@ void dodge::Bash_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_direct
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
+			if (getrace_VLserana(a_actor)) {
+		        logger::info("VL Serana Detected navigate stage");
+	        }
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
@@ -1513,6 +1579,10 @@ void dodge::BashSprint_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_
 		return;
 	}
 
+	if (getrace_VLserana(a_actor)) {
+		logger::info("VL Serana Detected attempt dodge stage");
+	}
+
 	/* Make a copy and shuffle directions. */
 	dodge_dir_set directions_shuffled = *a_directions;
 	std::shuffle(directions_shuffled.begin(), directions_shuffled.end(), gen);
@@ -1520,6 +1590,9 @@ void dodge::BashSprint_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
+			if (getrace_VLserana(a_actor)) {
+		        logger::info("VL Serana Detected navigate stage");
+	        }
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
