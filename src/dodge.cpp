@@ -1387,6 +1387,14 @@ void dodge::attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_directions,
 
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
+		if (getrace_VLserana(a_actor)) {
+		    if (can_goto(a_actor, dodge_dest)){
+				logger::info("VL Serana destination check succesful");
+			}
+			if (able_dodge(a_actor)){
+				logger::info("VL Serana Able to dodge successful");
+			}
+	    }
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
 			if (getrace_VLserana(a_actor)) {
 		        logger::info("VL Serana Detected navigate stage");
@@ -1427,6 +1435,14 @@ void dodge::Powerattack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a
 
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
+		if (getrace_VLserana(a_actor)) {
+		    if (can_goto(a_actor, dodge_dest)){
+				logger::info("VL Serana destination check succesful");
+			}
+			if (able_dodge(a_actor)){
+				logger::info("VL Serana Able to dodge successful");
+			}
+	    }
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
 			if (getrace_VLserana(a_actor)) {
 		        logger::info("VL Serana Detected navigate stage");
@@ -1467,6 +1483,14 @@ void dodge::NormalAttack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* 
 
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
+		if (getrace_VLserana(a_actor)) {
+		    if (can_goto(a_actor, dodge_dest)){
+				logger::info("VL Serana destination check succesful");
+			}
+			if (able_dodge(a_actor)){
+				logger::info("VL Serana Able to dodge successful");
+			}
+	    }
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
 			if (getrace_VLserana(a_actor)) {
 		        logger::info("VL Serana Detected navigate stage");
@@ -1508,6 +1532,14 @@ void dodge::Shouts_Spells_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set*
 
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
+		if (getrace_VLserana(a_actor)) {
+		    if (can_goto(a_actor, dodge_dest)){
+				logger::info("VL Serana destination check succesful");
+			}
+			if (able_dodge(a_actor)){
+				logger::info("VL Serana Able to dodge successful");
+			}
+	    }
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
 			if (getrace_VLserana(a_actor)) {
 		        logger::info("VL Serana Detected navigate stage");
@@ -1548,6 +1580,14 @@ void dodge::Bash_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_direct
 
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
+		if (getrace_VLserana(a_actor)) {
+		    if (can_goto(a_actor, dodge_dest)){
+				logger::info("VL Serana destination check succesful");
+			}
+			if (able_dodge(a_actor)){
+				logger::info("VL Serana Able to dodge successful");
+			}
+	    }
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
 			if (getrace_VLserana(a_actor)) {
 		        logger::info("VL Serana Detected navigate stage");
@@ -1589,6 +1629,14 @@ void dodge::BashSprint_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_
 
 	for (dodge_direction direction : directions_shuffled) {
 		RE::NiPoint3 dodge_dest = Utils::get_abs_pos(a_actor, get_dodge_vector(direction));
+		if (getrace_VLserana(a_actor)) {
+		    if (can_goto(a_actor, dodge_dest)){
+				logger::info("VL Serana destination check succesful");
+			}
+			if (able_dodge(a_actor)){
+				logger::info("VL Serana Able to dodge successful");
+			}
+	    }
 		if (can_goto(a_actor, dodge_dest) && able_dodge(a_actor)) {
 			if (getrace_VLserana(a_actor)) {
 		        logger::info("VL Serana Detected navigate stage");
