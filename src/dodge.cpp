@@ -621,7 +621,18 @@ void dodge::Reset_iFrames(RE::Actor* actor){
 	actor->SetGraphVariableBool("bInIframe", false);
 }
 
+void dodge::send_UNDdodge__event(RE::Actor* a_attacker)
+{
+	SKSE::ModCallbackEvent modEvent{
+		RE::BSFixedString("UND_DodgeEvent"),
+		RE::BSFixedString(),
+		0.0f,
+		a_attacker
+	};
 
+	SKSE::GetModCallbackEventSource()->SendEvent(&modEvent);
+	logger::info("Sent melee parry event");
+}
 
 /*Trigger reactive AI surrounding the attacker.*/
 void dodge::react_to_melee(RE::Actor* a_attacker, float attack_range)

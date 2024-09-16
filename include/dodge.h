@@ -155,6 +155,7 @@ public:
 	bool GetEquippedShout(RE::Actor* actor);
 	float GetShoutRange_Reaction(RE::Actor* actor, float distance);
 	float GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefthand = false);
+	void send_UNDdodge__event(RE::Actor *a_attacker);
 	
 	
 
