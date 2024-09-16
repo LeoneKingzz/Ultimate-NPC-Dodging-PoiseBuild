@@ -621,17 +621,17 @@ void dodge::Reset_iFrames(RE::Actor* actor){
 	actor->SetGraphVariableBool("bInIframe", false);
 }
 
-void dodge::send_UNDdodge__event(RE::Actor* a_attacker)
+void dodge::send_UNDdodge__event(RE::Actor* a_actor)
 {
 	SKSE::ModCallbackEvent modEvent{
 		RE::BSFixedString("UND_DodgeEvent"),
 		RE::BSFixedString(),
 		0.0f,
-		a_attacker
+		a_actor
 	};
 
 	SKSE::GetModCallbackEventSource()->SendEvent(&modEvent);
-	logger::info("Sent melee parry event");
+	logger::info("Sent UND dodge event");
 }
 
 bool dodge::getrace_VLserana(RE::Actor* a_actor)
@@ -1356,7 +1356,7 @@ void dodge::attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_directions,
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
-				do_dodge(a_actor, direction);
+				getrace_VLserana(a_actor)? do_dodge_VLSerana(a_actor, direction) : do_dodge(a_actor, direction);
 				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
 			}
 			return;
@@ -1389,7 +1389,7 @@ void dodge::Powerattack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
-				do_dodge(a_actor, direction);
+				getrace_VLserana(a_actor)? do_dodge_VLSerana(a_actor, direction) : do_dodge(a_actor, direction);
 				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
 			}
 			return;
@@ -1422,7 +1422,7 @@ void dodge::NormalAttack_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* 
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
-				do_dodge(a_actor, direction);
+				getrace_VLserana(a_actor)? do_dodge_VLSerana(a_actor, direction) : do_dodge(a_actor, direction);
 				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
 			}
 			return;
@@ -1456,7 +1456,7 @@ void dodge::Shouts_Spells_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set*
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
-				do_dodge(a_actor, direction);
+				getrace_VLserana(a_actor)? do_dodge_VLSerana(a_actor, direction) : do_dodge(a_actor, direction);
 				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
 			}
 			return;
@@ -1489,7 +1489,7 @@ void dodge::Bash_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_direct
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
-				do_dodge(a_actor, direction);
+				getrace_VLserana(a_actor)? do_dodge_VLSerana(a_actor, direction) : do_dodge(a_actor, direction);
 				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
 			}
 			return;
@@ -1523,7 +1523,7 @@ void dodge::BashSprint_attempt_dodge(RE::Actor* a_actor, const dodge_dir_set* a_
 			bool bIsDodging = false;
 			if (a_actor->GetGraphVariableBool("bIsDodging", bIsDodging) && !bIsDodging) {
 				
-				do_dodge(a_actor, direction);
+				getrace_VLserana(a_actor)? do_dodge_VLSerana(a_actor, direction) : do_dodge(a_actor, direction);
 				logger::info("Protagnist {} ReflexScore {}"sv, a_actor->GetName(), dodge_chance);
 			}
 			return;
@@ -1782,51 +1782,46 @@ RE::NiPoint3 dodge::get_dodge_vector(dodge_direction a_direction)
 void dodge::do_dodge_VLSerana(RE::Actor* a_actor, dodge_direction a_direction)
 {
 	auto HdSingle = RE::TESDataHandler::GetSingleton();
-	RE::TESGlobal* Xcoord = nullptr;
-	RE::TESGlobal* Ycoord = nullptr;
+	RE::TESGlobal* ZAngle = nullptr;
 
 	if (a_actor->HasKeywordString("VLS_Serana_Key")) {
-		RE::TESGlobal* Xcoord = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x800, "No Spell Shout FF.esp"));
-		RE::TESGlobal* Ycoord = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x800, "No Spell Shout FF.esp"));
-		if (Xcoord && Ycoord){
+		RE::TESGlobal* ZAngle = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x804, "VampireLordSerana.esp"));
+		if (ZAngle){
 			switch (a_direction) {
 			case kForward:
-			    Xcoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
-				Ycoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				ZAngle->value = GetSingleton()->GenerateRandomFloat(-60.0f, 60.0f);
 				break;
 			case kBackward:
-				Xcoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
-				Ycoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				ZAngle->value = GetSingleton()->GenerateRandomFloat(GetSingleton()->GenerateRandomFloat(-180.0f, -150.0f), GetSingleton()->GenerateRandomFloat(150.0f, 180.0f));
 				break;
 			case kLeft:
-				Xcoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
-				Ycoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				ZAngle->value = GetSingleton()->GenerateRandomFloat(-120.0f, -90.0f);
 				break;
 			case kRight:
-				Xcoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
-				Ycoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				ZAngle->value = GetSingleton()->GenerateRandomFloat(90.0f, 120.0f);
 				break;
 			}
+			send_UNDdodge__event(a_actor);
 		}
 
 	} else if (a_actor->HasKeywordString("VLS_Valerica_Key")) {
-		RE::TESGlobal* Xcoord = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x800, "No Spell Shout FF.esp"));
-		RE::TESGlobal* Ycoord = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x800, "No Spell Shout FF.esp"));
-		if (Xcoord && Ycoord) {
+		RE::TESGlobal* ZAngle = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x805, "VampireLordSerana.esp"));
+		if (ZAngle) {
 			switch (a_direction) {
 			case kForward:
-
+				ZAngle->value = GetSingleton()->GenerateRandomFloat(-60.0f, 60.0f);
 				break;
 			case kBackward:
-
+				ZAngle->value = GetSingleton()->GenerateRandomFloat(GetSingleton()->GenerateRandomFloat(-180.0f, -150.0f), GetSingleton()->GenerateRandomFloat(150.0f, 180.0f));
 				break;
 			case kLeft:
-
+				ZAngle->value = GetSingleton()->GenerateRandomFloat(-120.0f, -90.0f);
 				break;
 			case kRight:
-
+				ZAngle->value = GetSingleton()->GenerateRandomFloat(90.0f, 120.0f);
 				break;
 			}
+			send_UNDdodge__event(a_actor);
 		}
 	}
 }
