@@ -1293,7 +1293,7 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 bool dodge::able_dodge(RE::Actor* a_actor)
 {
 	auto attackState = a_actor->AsActorState()->GetAttackState();
-	auto CombatTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
+	//auto CombatTarget = a_actor->GetActorRuntimeData().currentCombatTarget.get().get();
 	auto ATMagicTarget = a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kParalysis);
 	auto magicTarget = a_actor->AsMagicTarget();
 	bool IsShouting = false;
