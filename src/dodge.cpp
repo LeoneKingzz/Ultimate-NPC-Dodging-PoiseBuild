@@ -1334,8 +1334,7 @@ bool dodge::able_dodge(RE::Actor* a_actor)
 	bool bUND_InCombatFoundEnemy = false;
 
 	if (getrace_VLserana(a_actor)) {
-		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && !CombatTarget->AsActorState()->IsBleedingOut()
-		&& a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25) {
+		if (!a_actor->IsInKillMove()) {
 			return true;
 		}else{
 			return false;
@@ -1953,3 +1952,5 @@ void dodge::do_dodge_VLSerana(RE::Actor* a_actor, dodge_direction a_direction)
 		}
 	}
 }
+
+//a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25
