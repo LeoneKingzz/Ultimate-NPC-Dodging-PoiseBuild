@@ -162,12 +162,20 @@ namespace hooks
 				return RE::BSEventNotifyControl::kContinue;
 			}
 
-			if (Protagonist->IsPlayerRef() || !Utils::Actor::isHumanoid(Protagonist)) {
+			if (Protagonist->IsPlayerRef()) {
 				return RE::BSEventNotifyControl::kContinue;
 			}
 
+			if (!Utils::Actor::isHumanoid(Protagonist)) {
+				if (!(Protagonist->HasKeywordString("VLS_Serana_Key") || Protagonist->HasKeywordString("VLS_Valerica_Key"))) {
+					return RE::BSEventNotifyControl::kContinue;
+				}
+			}
+
 			if (!(Protagonist->HasKeywordString("ActorTypeNPC") || Protagonist->HasKeywordString("DLC2ActorTypeMiraak"))) {
-				return RE::BSEventNotifyControl::kContinue;
+				if (!(Protagonist->HasKeywordString("VLS_Serana_Key") || Protagonist->HasKeywordString("VLS_Valerica_Key"))) {
+					return RE::BSEventNotifyControl::kContinue;
+				}
 			}
 
 			if (Protagonist->HasKeywordString("UND_ExcludeDodge")) {
@@ -236,11 +244,19 @@ namespace hooks
 
 	ptr_CombatPath on_combatBehavior_backoff_createPath::create_path(RE::Actor* a_actor, RE::NiPoint3* a_newPos, float a3, int speed_ind)
 	{
-		if (!Utils::Actor::isHumanoid(a_actor) || a_actor->HasKeywordString("UND_ExcludeDodge")) {
-			return _create_path(a_actor, a_newPos, a3, speed_ind);
+		if (!Utils::Actor::isHumanoid(a_actor)) {
+			if (!(a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key"))) {
+				return _create_path(a_actor, a_newPos, a3, speed_ind);
+			}
 		}
 
 		if (!(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak"))) {
+			if (!(a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key"))) {
+				return _create_path(a_actor, a_newPos, a3, speed_ind);
+			}
+		}
+
+		if (a_actor->HasKeywordString("UND_ExcludeDodge")) {
 			return _create_path(a_actor, a_newPos, a3, speed_ind);
 		}
 
@@ -258,11 +274,19 @@ namespace hooks
 
 	ptr_CombatPath on_combatBehavior_circle_createPath::create_path(RE::Actor* a_actor, RE::NiPoint3* a_newPos, float a3, int speed_ind)
 	{
-		if (!Utils::Actor::isHumanoid(a_actor) || a_actor->HasKeywordString("UND_ExcludeDodge")) {
-			return _create_path(a_actor, a_newPos, a3, speed_ind);
+		if (!Utils::Actor::isHumanoid(a_actor)) {
+			if (!(a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key"))) {
+				return _create_path(a_actor, a_newPos, a3, speed_ind);
+			}
 		}
 
 		if (!(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak"))) {
+			if (!(a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key"))) {
+				return _create_path(a_actor, a_newPos, a3, speed_ind);
+			}
+		}
+
+		if (a_actor->HasKeywordString("UND_ExcludeDodge")) {
 			return _create_path(a_actor, a_newPos, a3, speed_ind);
 		}
 
@@ -280,11 +304,19 @@ namespace hooks
 
 	ptr_CombatPath on_combatBehavior_fallback_createPath::create_path(RE::Actor* a_actor, RE::NiPoint3* a_newPos, float a3, int speed_ind)
 	{
-		if (!Utils::Actor::isHumanoid(a_actor) || a_actor->HasKeywordString("UND_ExcludeDodge")) {
-			return _create_path(a_actor, a_newPos, a3, speed_ind);
+		if (!Utils::Actor::isHumanoid(a_actor)) {
+			if (!(a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key"))) {
+				return _create_path(a_actor, a_newPos, a3, speed_ind);
+			}
 		}
 
 		if (!(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak"))) {
+			if (!(a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key"))) {
+				return _create_path(a_actor, a_newPos, a3, speed_ind);
+			}
+		}
+
+		if (a_actor->HasKeywordString("UND_ExcludeDodge")) {
 			return _create_path(a_actor, a_newPos, a3, speed_ind);
 		}
 
@@ -302,11 +334,19 @@ namespace hooks
 
 	ptr_CombatPath on_combatBehavior_dodgethreat_createPath::create_path(RE::Actor* a_actor, RE::NiPoint3* a_newPos, float a3, int speed_ind)
 	{
-		if (!Utils::Actor::isHumanoid(a_actor) || a_actor->HasKeywordString("UND_ExcludeDodge")) {
-			return _create_path(a_actor, a_newPos, a3, speed_ind);
+		if (!Utils::Actor::isHumanoid(a_actor)) {
+			if (!(a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key"))) {
+				return _create_path(a_actor, a_newPos, a3, speed_ind);
+			}
 		}
 
 		if (!(a_actor->HasKeywordString("ActorTypeNPC") || a_actor->HasKeywordString("DLC2ActorTypeMiraak"))) {
+			if (!(a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key"))) {
+				return _create_path(a_actor, a_newPos, a3, speed_ind);
+			}
+		}
+
+		if (a_actor->HasKeywordString("UND_ExcludeDodge")) {
 			return _create_path(a_actor, a_newPos, a3, speed_ind);
 		}
 
