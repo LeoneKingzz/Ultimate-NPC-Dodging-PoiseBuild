@@ -634,9 +634,17 @@ void dodge::send_UNDdodge__event(RE::Actor* a_attacker)
 	logger::info("Sent melee parry event");
 }
 
-bool dodge::getrace(RE::Actor* a_attacker)
+bool dodge::getrace_VLserana(RE::Actor* a_actor)
 {
-	
+	bool result = false;
+	const auto race = a_actor->GetRace();
+	const auto raceEDID = race->formEditorID;
+	if (raceEDID == "DLC1VampireBeastRace") {
+		if (a_actor->HasKeywordString("VLS_Serana_Key") || a_actor->HasKeywordString("VLS_Valerica_Key")) {
+			result = true;
+		}
+	}
+	return result;
 }
 
 /*Trigger reactive AI surrounding the attacker.*/
@@ -1298,7 +1306,7 @@ bool dodge::able_dodge(RE::Actor* a_actor)
 		const auto magicEffect = RE::TESForm::LookupByEditorID("zxlice_cooldownEffect")->As<RE::EffectSetting>();
 
 		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && !CombatTarget->AsActorState()->IsBleedingOut() && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
-		&& a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost 
+		&& (getrace_VLserana(a_actor)? a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25 : a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost) 
 		&& !(attackState == RE::ATTACK_STATE_ENUM::kSwing || attackState == RE::ATTACK_STATE_ENUM::kHit  || attackState == RE::ATTACK_STATE_ENUM::kFollowThrough || attackState == RE::ATTACK_STATE_ENUM::kBash 
 		|| attackState == RE::ATTACK_STATE_ENUM::kBowDrawn || attackState == RE::ATTACK_STATE_ENUM::kBowReleasing || attackState == RE::ATTACK_STATE_ENUM::kBowFollowThrough) && !magicTarget->HasMagicEffect(magicEffect)) {
 			return true;
@@ -1306,7 +1314,7 @@ bool dodge::able_dodge(RE::Actor* a_actor)
 	} else if (settings::bUAPNG_mod_Check){
 		bool IUBusy = false;
 		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && !CombatTarget->AsActorState()->IsBleedingOut() && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
-		&& (a_actor->GetGraphVariableBool("IUBusy", IUBusy) && !IUBusy) && a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost 
+		&& (a_actor->GetGraphVariableBool("IUBusy", IUBusy) && !IUBusy) && (getrace_VLserana(a_actor)? a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25 : a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost) 
 		&& !(attackState == RE::ATTACK_STATE_ENUM::kSwing || attackState == RE::ATTACK_STATE_ENUM::kHit  || attackState == RE::ATTACK_STATE_ENUM::kFollowThrough || attackState == RE::ATTACK_STATE_ENUM::kBash 
 		|| attackState == RE::ATTACK_STATE_ENUM::kBowDrawn || attackState == RE::ATTACK_STATE_ENUM::kBowReleasing || attackState == RE::ATTACK_STATE_ENUM::kBowFollowThrough)) {
 			return true;
@@ -1314,7 +1322,7 @@ bool dodge::able_dodge(RE::Actor* a_actor)
 
 	} else{
 		if (!a_actor->IsInKillMove() && (a_actor->GetGraphVariableBool("bUND_InCombatFoundEnemy", bUND_InCombatFoundEnemy) && bUND_InCombatFoundEnemy) && (a_actor->GetGraphVariableBool("IsShouting", IsShouting) && !IsShouting) && !CombatTarget->AsActorState()->IsBleedingOut() && ATMagicTarget == 0.0 && !magicTarget->HasEffectWithArchetype(RE::EffectArchetypes::ArchetypeID::kDemoralize)
-		&& a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost 
+		&& (getrace_VLserana(a_actor)? a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) >= 25 : a_actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) >= SideStep_staminacost) 
 		&& !(attackState == RE::ATTACK_STATE_ENUM::kSwing || attackState == RE::ATTACK_STATE_ENUM::kHit  || attackState == RE::ATTACK_STATE_ENUM::kFollowThrough || attackState == RE::ATTACK_STATE_ENUM::kBash 
 		|| attackState == RE::ATTACK_STATE_ENUM::kBowDrawn || attackState == RE::ATTACK_STATE_ENUM::kBowReleasing || attackState == RE::ATTACK_STATE_ENUM::kBowFollowThrough)) {
 			return true;
@@ -1615,6 +1623,7 @@ void dodge::TRKE_dodge(RE::Actor* actor, const char* a_event, bool backingoff)
 	auto DS = dodge::GetSingleton();
 	const float DodgeRoll_staminacost = DS->get_stamina_basecost(actor, DS->Staminaa, true);
 	actor->NotifyAnimationGraph("InterruptCast");
+	actor->InterruptCast(false);
 
 	if (backingoff) {
 		actor->SetGraphVariableInt("iStep", 2);
@@ -1768,4 +1777,56 @@ RE::NiPoint3 dodge::get_dodge_vector(dodge_direction a_direction)
 	}
 	
 	return ret;
+}
+
+void dodge::do_dodge_VLSerana(RE::Actor* a_actor, dodge_direction a_direction)
+{
+	auto HdSingle = RE::TESDataHandler::GetSingleton();
+	RE::TESGlobal* Xcoord = nullptr;
+	RE::TESGlobal* Ycoord = nullptr;
+
+	if (a_actor->HasKeywordString("VLS_Serana_Key")) {
+		RE::TESGlobal* Xcoord = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x800, "No Spell Shout FF.esp"));
+		RE::TESGlobal* Ycoord = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x800, "No Spell Shout FF.esp"));
+		if (Xcoord && Ycoord){
+			switch (a_direction) {
+			case kForward:
+			    Xcoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				Ycoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				break;
+			case kBackward:
+				Xcoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				Ycoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				break;
+			case kLeft:
+				Xcoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				Ycoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				break;
+			case kRight:
+				Xcoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				Ycoord->value = GetSingleton()->GenerateRandomFloat(1.0f, 2.0f);
+				break;
+			}
+		}
+
+	} else if (a_actor->HasKeywordString("VLS_Valerica_Key")) {
+		RE::TESGlobal* Xcoord = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x800, "No Spell Shout FF.esp"));
+		RE::TESGlobal* Ycoord = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x800, "No Spell Shout FF.esp"));
+		if (Xcoord && Ycoord) {
+			switch (a_direction) {
+			case kForward:
+
+				break;
+			case kBackward:
+
+				break;
+			case kLeft:
+
+				break;
+			case kRight:
+
+				break;
+			}
+		}
+	}
 }

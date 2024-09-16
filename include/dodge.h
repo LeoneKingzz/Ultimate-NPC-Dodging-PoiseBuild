@@ -156,7 +156,7 @@ public:
 	float GetShoutRange_Reaction(RE::Actor* actor, float distance);
 	float GetSpellRange_Reaction(RE::Actor* actor, float distance, bool lefthand = false);
 	void send_UNDdodge__event(RE::Actor *a_attacker);
-	bool getrace(RE::Actor *a_attacker);
+	static bool getrace_VLserana(RE::Actor *a_actor);
 	
 	
 
@@ -174,6 +174,7 @@ private:
 	void TRKE_dodge(RE::Actor* actor, const char* a_event, bool backingoff = false);
 
 	RE::NiPoint3 get_dodge_vector(dodge_direction a_direction);
+	void do_dodge_VLSerana(RE::Actor* a_actor, dodge_direction a_direction);
 
 	//std::unordered_set<RE::ActorHandle> dodging_actors;
 	//mutable std::shared_mutex dodging_actors_lock;
