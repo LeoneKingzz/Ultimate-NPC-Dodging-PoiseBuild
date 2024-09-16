@@ -1782,7 +1782,6 @@ RE::NiPoint3 dodge::get_dodge_vector(dodge_direction a_direction)
 void dodge::do_dodge_VLSerana(RE::Actor* a_actor, dodge_direction a_direction)
 {
 	auto HdSingle = RE::TESDataHandler::GetSingleton();
-	RE::TESGlobal* ZAngle = nullptr;
 
 	if (a_actor->HasKeywordString("VLS_Serana_Key")) {
 		RE::TESGlobal* ZAngle = skyrim_cast<RE::TESGlobal*>(HdSingle->LookupForm(0x804, "VampireLordSerana.esp"));
