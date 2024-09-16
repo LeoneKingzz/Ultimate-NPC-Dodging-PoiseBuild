@@ -634,6 +634,7 @@ void dodge::send_UNDdodge__event(RE::Actor* a_attacker)
 	logger::info("Sent melee parry event");
 }
 
+
 /*Trigger reactive AI surrounding the attacker.*/
 void dodge::react_to_melee(RE::Actor* a_attacker, float attack_range)
 {
@@ -651,7 +652,9 @@ void dodge::react_to_melee(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!Utils::Actor::isHumanoid(refr)) {
-						continue;
+						if(!(refr->HasKeywordString("VLS_Serana_Key") || refr->HasKeywordString("VLS_Valerica_Key"))){
+                            continue;
+						}
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
@@ -707,7 +710,9 @@ void dodge::react_to_melee_power(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!Utils::Actor::isHumanoid(refr)) {
-						continue;
+						if(!(refr->HasKeywordString("VLS_Serana_Key") || refr->HasKeywordString("VLS_Valerica_Key"))){
+                            continue;
+						}
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
@@ -763,7 +768,9 @@ void dodge::react_to_melee_normal(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!Utils::Actor::isHumanoid(refr)) {
-						continue;
+						if(!(refr->HasKeywordString("VLS_Serana_Key") || refr->HasKeywordString("VLS_Valerica_Key"))){
+                            continue;
+						}
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
@@ -819,7 +826,9 @@ void dodge::react_to_bash(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!Utils::Actor::isHumanoid(refr)) {
-						continue;
+						if(!(refr->HasKeywordString("VLS_Serana_Key") || refr->HasKeywordString("VLS_Valerica_Key"))){
+                            continue;
+						}
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
@@ -875,7 +884,9 @@ void dodge::react_to_bash_sprint(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!Utils::Actor::isHumanoid(refr)) {
-						continue;
+						if(!(refr->HasKeywordString("VLS_Serana_Key") || refr->HasKeywordString("VLS_Valerica_Key"))){
+                            continue;
+						}
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
@@ -931,7 +942,9 @@ void dodge::react_to_ranged(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!Utils::Actor::isHumanoid(refr)) {
-						continue;
+						if(!(refr->HasKeywordString("VLS_Serana_Key") || refr->HasKeywordString("VLS_Valerica_Key"))){
+                            continue;
+						}
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
@@ -1037,7 +1050,9 @@ void dodge::react_to_shouts_spells(RE::Actor* a_attacker, float attack_range)
 						continue;
 					}
 					if (!Utils::Actor::isHumanoid(refr)) {
-						continue;
+						if(!(refr->HasKeywordString("VLS_Serana_Key") || refr->HasKeywordString("VLS_Valerica_Key"))){
+                            continue;
+						}
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
@@ -1122,7 +1137,9 @@ void dodge::react_to_shouts_spells_fast(RE::Actor* a_attacker, float attack_rang
 						continue;
 					}
 					if (!Utils::Actor::isHumanoid(refr)) {
-						continue;
+						if(!(refr->HasKeywordString("VLS_Serana_Key") || refr->HasKeywordString("VLS_Valerica_Key"))){
+                            continue;
+						}
 					}
 					if (!(refr->HasKeywordString("ActorTypeNPC") || refr->HasKeywordString("DLC2ActorTypeMiraak"))) {
 						continue;
